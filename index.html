@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Treasure Bet</title>
+<title>Treasure Bet Nigerian betting platform </title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -639,4 +639,5 @@ let tt;function showToast(msg){clearTimeout(tt);document.getElementById('toastMs
 setInterval(()=>{betHistory.forEach(b=>{if(b.status==='pending'&&Math.random()>.92){b.status=Math.random()>.42?'won':'lost';if(b.status==='won'&&currentUser){balance+=b.potWin;updateBal();showToast('🏆 Bet won! ₦'+fmt(b.potWin)+' added');playSound('win')}else if(b.status==='lost')showToast('Bet settled — better luck next time!');updateHistory()}})},8000);
 </script>
 </body>
+
 </html>
