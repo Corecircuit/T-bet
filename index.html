@@ -778,7 +778,7 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
     </div>
   </div>
   <div class="fb2">
-    <span>© 2025 Treasure Bet. All rights reserved.</span>
+    <span>© 2026 Treasure Bet. All rights reserved.</span>
     <span>18+ | Gamble Responsibly</span>
   </div>
 </footer>
@@ -931,12 +931,12 @@ function createMatch(sport, isLive = Math.random() > 0.6) {
     odds: baseOdds,
     isLive,
     status: isLive ? 'live' : 'upcoming',
-    time: isLive ? Math.floor(Math.random() * 80) + 1 : Math.floor(Math.random() * 120) + 30,
-    score: isLive ? {home: Math.floor(Math.random() * 3), away: Math.floor(Math.random() * 3)} : {home: 0, away: 0},
+    time: isLive ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 5) + 1,
+    score: isLive ? {home: Math.floor(Math.random() * 2), away: Math.floor(Math.random() * 2)} : {home: 0, away: 0},
     stats: {possession: 50, homeAtt: 0, awayAtt: 0},
     halfTime: false,
     fullTime: false,
-    startTime: Date.now() + (isLive ? -Math.random() * 3600000 : Math.random() * 7200000)
+    startTime: Date.now()
   };
   
   state.matches.push(match);
@@ -955,18 +955,18 @@ function generateVirtualMatches() {
   for (let i = 0; i < 4; i++) {
     const match = createMatch('football', true);
     match.isVirtual = true;
-    match.time = Math.floor(Math.random() * 90);
+    match.time = Math.floor(Math.random() * 3);
     state.virtualMatches.push(match);
   }
 }
 
 // ==========================================
-// MATCH SIMULATION ENGINE
+// MATCH SIMULATION ENGINE - 3 MINUTE MATCHES
 // ==========================================
 function startMatchSimulation() {
   setInterval(() => {
     updateMatches();
-  }, 1000); 
+  }, 1000); // Update every second
 }
 
 function updateMatches() {
@@ -981,91 +981,160 @@ function updateMatches() {
     if (match.isLive && !match.halfTime) {
       match.time = Math.min(1.5, elapsed);
       
-      // Random goals - increased for short match
-      if (Math.random() < 0.1) {
+      // Random goals - 15% chance per second for action
+      if (Math.random() < 0.15) {
         if (Math.random() > 0.5) match.score.home++;
         else match.score.away++;
-        showToast('Goal!', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
+        showToast('⚽ GOAL!', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
       }
       
-      // Half time at 1.5 minutes
+      // Half time at exactly 1.5 minutes
       if (match.time >= 1.5) {
         match.halfTime = true;
         match.status = 'HT';
-        showToast('Half Time', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
+        showToast('⏸️ HALF TIME', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
       }
     } 
-    // HALF-TIME BREAK (1.5 - 2 minutes)
+    // HALF-TIME BREAK (1.5 - 2 minutes) - 30 second break
     else if (match.halfTime && !match.fullTime) {
-      if (elapsed >= 2) {
+      if (elapsed >= 2) { // 30 second break
         match.halfTime = false;
         match.isLive = true;
         match.status = 'live';
-        match.startTime = now - (1.5 * 60 * 1000);
+        match.startTime = now - (1.5 * 60 * 1000); // Reset to 1.5 min elapsed
+        showToast('▶️ SECOND HALF', `${match.home} vs ${match.away} resumed!`);
       }
     } 
     // SECOND HALF (2 - 3 minutes)
     else if (match.isLive && !match.halfTime && elapsed > 2) {
       match.time = Math.min(3, 1.5 + (elapsed - 2));
       
-      if (Math.random() < 0.08) {
+      // Random goals in second half
+      if (Math.random() < 0.12) {
         if (Math.random() > 0.5) match.score.home++;
         else match.score.away++;
+        showToast('⚽ GOAL!', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
       }
       
-      // Full time at 3 minutes
+      // Full time at exactly 3 minutes
       if (match.time >= 3) {
         match.fullTime = true;
         match.status = 'FT';
         match.isLive = false;
-        showToast('Full Time', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
         
+        // CHECK BETS IMMEDIATELY
         checkBetResults(match);
         
+        showToast('🏁 FULL TIME', `${match.home} ${match.score.home} - ${match.score.away} ${match.away}`);
+        
+        // Replace with new match after 3 seconds
         setTimeout(() => {
           const idx = state.matches.indexOf(match);
           if (idx > -1) {
             state.matches.splice(idx, 1);
-            state.matches.push(createMatch(match.sport, Math.random() > 0.5));
+            state.matches.push(createMatch(match.sport, true));
             renderMatches();
           }
-        }, 5000);
+        }, 3000);
       }
+    }
+    
+    // Update stats for live matches
+    if (match.isLive && !match.halfTime && !match.fullTime) {
+      match.stats.possession = 50 + Math.floor(Math.random() * 20 - 10);
+      match.stats.homeAtt += Math.floor(Math.random() * 2);
+      match.stats.awayAtt += Math.floor(Math.random() * 2);
     }
   });
   
   renderMatches();
   updateBetslip();
   renderHistory();
+  renderMyBets();
 }
+
 function checkBetResults(match) {
+  let anyBetUpdated = false;
+  
   state.history.forEach(bet => {
     if (bet.status !== 'pending') return;
     
-    const matchBet = bet.selections.find(s => s.match.includes(match.home) && s.match.includes(match.away));
-    if (!matchBet) return;
+    // Check if this bet includes the finished match
+    const hasThisMatch = bet.selections.some(s => s.matchId === match.id);
+    if (!hasThisMatch) return;
     
-    let won = false;
-    if (matchBet.selection === match.home && match.score.home > match.score.away) won = true;
-    else if (matchBet.selection === match.away && match.score.away > match.score.home) won = true;
-    else if (matchBet.selection === 'Draw' && match.score.home === match.score.away) won = true;
+    // Find the specific selection for this match
+    const matchSelection = bet.selections.find(s => s.matchId === match.id);
+    if (!matchSelection) return;
     
-    if (won) {
-      bet.status = 'won';
-      state.balance += bet.potentialWin;
-      showToast('Bet Won!', `You won ₦${bet.potentialWin.toFixed(2)}`);
-    } else {
-      bet.status = 'lost';
-      showToast('Bet Lost', 'Better luck next time');
+    // Determine if this selection won
+    let selectionWon = false;
+    if (matchSelection.selection === match.home && match.score.home > match.score.away) {
+      selectionWon = true;
+    } else if (matchSelection.selection === match.away && match.score.away > match.score.home) {
+      selectionWon = true;
+    } else if (matchSelection.selection === 'Draw' && match.score.home === match.score.away) {
+      selectionWon = true;
     }
     
-    state.vipPoints += won ? Math.floor(bet.potentialWin / 100) : Math.floor(bet.stake / 50);
-    updateVIP();
+    // For single bets - update immediately
+    if (bet.selections.length === 1) {
+      if (selectionWon) {
+        bet.status = 'won';
+        state.balance += bet.potentialWin;
+        anyBetUpdated = true;
+        showToast('🎉🎉 BET WON!', `You won ₦${bet.potentialWin.toFixed(2)}! Added to balance!`);
+      } else {
+        bet.status = 'lost';
+        anyBetUpdated = true;
+        showToast('❌ BET LOST', `You lost ₦${bet.stake.toFixed(2)}. Better luck next time!`);
+      }
+    } 
+    // For accumulators - check if all matches are done
+    else {
+      // Check if all matches in accumulator are finished
+      const allMatchesDone = bet.selections.every(s => {
+        const m = state.matches.find(m => m.id === s.matchId);
+        return !m || m.fullTime;
+      });
+      
+      if (allMatchesDone) {
+        // Check if all selections won
+        const allWon = bet.selections.every(s => {
+          const m = state.matches.find(m => m.id === s.matchId);
+          if (!m) return false;
+          if (s.selection === m.home && m.score.home > m.score.away) return true;
+          if (s.selection === m.away && m.score.away > m.score.home) return true;
+          if (s.selection === 'Draw' && m.score.home === m.score.away) return true;
+          return false;
+        });
+        
+        if (allWon) {
+          bet.status = 'won';
+          state.balance += bet.potentialWin;
+          anyBetUpdated = true;
+          showToast('🎉🎉 ACCA WON!', `You won ₦${bet.potentialWin.toFixed(2)}! All ${bet.selections.length} picks correct!`);
+        } else {
+          bet.status = 'lost';
+          anyBetUpdated = true;
+          showToast('❌ ACCA LOST', `One or more picks failed. Lost ₦${bet.stake.toFixed(2)}`);
+        }
+      }
+    }
+    
+    // Update VIP points
+    if (bet.status !== 'pending') {
+      state.vipPoints += bet.status === 'won' ? Math.floor(bet.potentialWin / 100) : Math.floor(bet.stake / 50);
+      updateVIP();
+    }
   });
   
-  saveUser();
-  updateUI();
-    renderMyBets(); // Refresh my bets display
+  if (anyBetUpdated) {
+    saveUser();
+    updateUI();
+    renderHistory();
+    renderMyBets();
+  }
 }
 
 // ==========================================
@@ -1087,18 +1156,31 @@ function renderMatches() {
     const isHT = match.halfTime;
     const isFT = match.fullTime;
     
+    // Time display
+    let timeDisplay = '';
+    if (isLive) {
+      timeDisplay = `${Math.floor(match.time * 60)}'`;
+    } else if (isHT) {
+      timeDisplay = 'HT';
+    } else if (isFT) {
+      timeDisplay = 'FT';
+    } else {
+      timeDisplay = formatTime(match.time);
+    }
+    
     return `
       <div class="mc ${isLive ? 'lv' : ''} ${isHT ? 'ht' : ''} ${isFT ? 'ft' : ''}">
         <div class="mch">
           <div class="mcl">
             <div class="ld2">${match.sport[0].toUpperCase()}</div>
             <span>${match.league}</span>
-            ${isLive ? '<span style="color:var(--red);font-weight:700">● LIVE</span>' : ''}
-            ${isHT ? '<span style="color:var(--g);font-weight:700">HT</span>' : ''}
-            ${isFT ? '<span style="color:var(--blue);font-weight:700">FT</span>' : ''}
+            ${isLive ? '<span style="color:var(--red);font-weight:700;background:rgba(239,68,68,0.15);padding:2px 6px;border-radius:4px;">● LIVE</span>' : ''}
+            ${isHT ? '<span style="color:var(--g);font-weight:700;background:rgba(245,197,24,0.15);padding:2px 6px;border-radius:4px;">HT</span>' : ''}
+            ${isFT ? '<span style="color:var(--blue);font-weight:700;background:rgba(59,130,246,0.15);padding:2px 6px;border-radius:4px;">FT</span>' : ''}
           </div>
-          <div style="display:flex;gap:.5rem">
-            <span class="scr">${isLive || isHT || isFT ? match.score.home + ' - ' + match.score.away : formatTime(match.time)}</span>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <span class="scr" style="${isLive ? 'color:var(--red);' : isFT ? 'color:var(--blue);' : ''}">${match.score.home} - ${match.score.away}</span>
+            <span style="font-size:0.7rem;color:var(--t3);font-weight:600;">${timeDisplay}</span>
             <button class="ms2 ${isFav(match.id) ? 'on' : ''}" onclick="toggleFav('${match.id}')">
               <i class="${isFav(match.id) ? 'fas' : 'far'} fa-star"></i>
             </button>
@@ -1143,7 +1225,7 @@ function renderVirtualMatches() {
       <span class="vt">LIVE</span>
       <div class="mch" style="margin-bottom:.5rem">
         <span style="font-size:.75rem;color:var(--t3)">Virtual League</span>
-        <span class="scr">${match.time}' ${match.score.home}-${match.score.away}</span>
+        <span class="scr">${match.time.toFixed(0)}' ${match.score.home}-${match.score.away}</span>
       </div>
       <div class="mts" style="margin-bottom:.5rem">
         <div class="tm"><span class="tn">${match.home}</span></div>
@@ -1151,9 +1233,9 @@ function renderVirtualMatches() {
         <div class="tm aw"><span class="tn">${match.away}</span></div>
       </div>
       <div class="or">
-        <button class="op" onclick="addBet('V${match.id}', 'home', ${match.odds.home})"><div class="ov">${match.odds.home}</div></button>
-        <button class="op" onclick="addBet('V${match.id}', 'draw', ${match.odds.draw})"><div class="ov">${match.odds.draw}</div></button>
-        <button class="op" onclick="addBet('V${match.id}', 'away', ${match.odds.away})"><div class="ov">${match.odds.away}</div></button>
+        <button class="op" onclick="addBet('${match.id}', 'home', ${match.odds.home})"><div class="ov">${match.odds.home}</div></button>
+        <button class="op" onclick="addBet('${match.id}', 'draw', ${match.odds.draw})"><div class="ov">${match.odds.draw}</div></button>
+        <button class="op" onclick="addBet('${match.id}', 'away', ${match.odds.away})"><div class="ov">${match.odds.away}</div></button>
       </div>
     </div>
   `).join('');
@@ -1161,7 +1243,7 @@ function renderVirtualMatches() {
 
 function formatTime(minutes) {
   const hrs = Math.floor(minutes / 60);
-  const mins = minutes % 60;
+  const mins = Math.floor(minutes % 60);
   const date = new Date();
   date.setHours(date.getHours() + hrs);
   date.setMinutes(date.getMinutes() + mins);
@@ -1172,26 +1254,36 @@ function formatTime(minutes) {
 // BETTING SYSTEM
 // ==========================================
 function addBet(matchId, selection, odds) {
-  const match = state.matches.find(m => m.id === matchId) || state.virtualMatches.find(m => 'V' + m.id === matchId);
-  if (!match || match.fullTime) return;
+  const match = state.matches.find(m => m.id === matchId) || state.virtualMatches.find(m => m.id === matchId);
+  if (!match) {
+    showToast('Error', 'Match not found');
+    return;
+  }
+  if (match.fullTime) {
+    showToast('Error', 'Match already ended!');
+    return;
+  }
   
   // Remove existing bet on this match
   state.bets = state.bets.filter(b => b.matchId !== matchId);
   
+  const selectionName = selection === 'home' ? match.home : selection === 'away' ? match.away : 'Draw';
+  
   state.bets.push({
-    matchId,
+    matchId: match.id,
     match: `${match.home} vs ${match.away}`,
-    selection: selection === 'home' ? match.home : selection === 'away' ? match.away : 'Draw',
-    odds,
+    selection: selectionName,
+    odds: parseFloat(odds),
     sport: match.sport
   });
   
   updateBetslip();
-  showToast('Bet Added', `${match.home} vs ${match.away} - ${selection}`);
+  showToast('✅ Bet Added', `${match.home} vs ${match.away} - ${selectionName} @ ${odds}`);
 }
 
 function isSelected(matchId, selection) {
-  return state.bets.some(b => b.matchId === matchId && b.selection === (selection === 'home' ? 'home' : selection === 'away' ? 'away' : 'Draw'));
+  const selName = selection === 'home' ? 'home' : selection === 'away' ? 'away' : 'Draw';
+  return state.bets.some(b => b.matchId === matchId && b.selection === selName);
 }
 
 function updateBetslip() {
@@ -1217,7 +1309,6 @@ function updateBetslip() {
     `).join('') + '</div>';
     stakeDiv.style.display = 'block';
     bhi.classList.add('on');
-    renderHistory();
   }
   
   calcWin();
@@ -1271,6 +1362,19 @@ function openPayModal() {
 function placeBet(stake) {
   if (state.bets.length === 0) return;
   
+  // Check if any match already ended
+  const endedBets = state.bets.filter(b => {
+    const match = state.matches.find(m => m.id === b.matchId);
+    return !match || match.fullTime;
+  });
+  
+  if (endedBets.length > 0) {
+    showToast('Error', 'Some matches already ended! Removing them...');
+    state.bets = state.bets.filter(b => !endedBets.includes(b));
+    updateBetslip();
+    return;
+  }
+  
   const totalOdds = state.bets.reduce((acc, bet) => acc * bet.odds, 1);
   const potentialWin = stake * totalOdds;
   
@@ -1279,12 +1383,14 @@ function placeBet(stake) {
   const betRecord = {
     id: 'B' + Date.now(),
     date: new Date().toLocaleString(),
-    stake,
+    stake: parseFloat(stake),
     odds: totalOdds,
-    potentialWin,
-        selections: state.bets.map(b => ({
-      ...b,
-      matchId: b.matchId // Ensure matchId is stored for tracking
+    potentialWin: parseFloat(potentialWin.toFixed(2)),
+    selections: state.bets.map(b => ({
+      matchId: b.matchId,
+      match: b.match,
+      selection: b.selection,
+      odds: b.odds
     })),
     status: 'pending'
   };
@@ -1296,19 +1402,134 @@ function placeBet(stake) {
   // Show receipt
   showReceipt(betRecord);
   
+  // Clear current bets
   state.bets = [];
   updateBetslip();
   updateUI();
   saveUser();
+  renderMyBets();
   
-  showToast('Bet Placed!', 'Good luck!');
+  showToast('✅ Bet Placed!', `₦${stake} on ${betRecord.selections.length} pick${betRecord.selections.length > 1 ? 's' : ''}. Match ends in ~3 min!`);
 }
+
+// ==========================================
+// MY BETS PANEL
+// ==========================================
+function renderMyBets() {
+  const container = document.getElementById('myBetsList');
+  if (!container) return;
+  
+  // Get all bets, pending first
+  const pendingBets = state.history.filter(b => b.status === 'pending');
+  const settledBets = state.history.filter(b => b.status !== 'pending').slice(0, 5);
+  
+  let html = '';
+  
+  // PENDING BETS
+  if (pendingBets.length > 0) {
+    html += '<div style="font-size:.65rem;color:var(--t3);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;">⏳ Active Bets</div>';
+    
+    html += pendingBets.map(bet => {
+      // Check if matches are live
+      const liveMatches = bet.selections.filter(s => {
+        const m = state.matches.find(m => m.id === s.matchId);
+        return m && m.isLive && !m.fullTime;
+      });
+      
+      const hasLive = liveMatches.length > 0;
+      
+      // Build selections with live scores
+      const selectionsHtml = bet.selections.map(s => {
+        const m = state.matches.find(m => m.id === s.matchId);
+        if (!m) return `<div style="color:var(--t2);">${s.match} <span style="color:var(--g);">(${s.selection})</span></div>`;
+        
+        const isWinning = (s.selection === m.home && m.score.home > m.score.away) ||
+                         (s.selection === m.away && m.score.away > m.score.home) ||
+                         (s.selection === 'Draw' && m.score.home === m.score.away);
+        
+        const statusIcon = m.fullTime ? (isWinning ? '✅' : '❌') : (isWinning ? '🟢' : '⏳');
+        
+        return `<div style="margin-bottom:3px;">
+          <span style="color:${m.fullTime ? 'var(--t2)' : 'var(--t)'};font-weight:${m.isLive ? '600' : '400'};">
+            ${m.home} ${m.score.home}-${m.score.away} ${m.away}
+          </span>
+          <span style="color:var(--g);font-size:0.7rem;">(${s.selection}) ${statusIcon}</span>
+          ${m.isLive ? '<span style="color:var(--red);font-size:0.65rem;margin-left:4px;">● LIVE</span>' : ''}
+        </div>`;
+      }).join('');
+      
+      return `
+      <div style="background:var(--bg2);border:1px solid ${hasLive ? 'var(--red)' : 'var(--g)'};border-radius:10px;padding:.7rem;margin-bottom:.6rem;font-size:.74rem;animation:${hasLive ? 'pulse-border 2s infinite' : 'none'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">
+          <span style="font-weight:700;color:var(--t);">${bet.selections.length} PICK${bet.selections.length > 1 ? 'S' : ''}</span>
+          <span style="color:${hasLive ? 'var(--red)' : 'var(--g)'};font-weight:700;font-size:0.75rem;">
+            ${hasLive ? '🔴 LIVE' : '⏳ PENDING'}
+          </span>
+        </div>
+        <div style="color:var(--t2);margin-bottom:.4rem;line-height:1.4;">
+          ${selectionsHtml}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bd);padding-top:.4rem;">
+          <span style="color:var(--t3);font-size:0.7rem;">Stake: ₦${bet.stake.toFixed(0)}</span>
+          <span style="color:var(--green);font-weight:700;font-size:0.9rem;">Win: ₦${bet.potentialWin.toFixed(0)}</span>
+        </div>
+      </div>
+      `;
+    }).join('');
+  }
+  
+  // SETTLED BETS (Recent)
+  if (settledBets.length > 0) {
+    html += '<div style="font-size:.65rem;color:var(--t3);margin:.8rem 0 .5rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;">📊 Recent Results</div>';
+    
+    html += settledBets.map(bet => {
+      const isWon = bet.status === 'won';
+      const borderColor = isWon ? 'var(--green)' : 'var(--red)';
+      const bgColor = isWon ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)';
+      
+      return `
+      <div style="background:${bgColor};border:1px solid ${borderColor};border-radius:10px;padding:.7rem;margin-bottom:.5rem;font-size:.74rem;opacity:0.9;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+          <span style="font-weight:700;color:var(--t);">${bet.selections.length} PICK${bet.selections.length > 1 ? 'S' : ''}</span>
+          <span style="color:${isWon ? 'var(--green)' : 'var(--red)'};font-weight:800;background:${isWon ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'};padding:3px 10px;border-radius:6px;font-size:0.8rem;">
+            ${isWon ? '🎉 WON' : '❌ LOST'}
+          </span>
+        </div>
+        <div style="color:var(--t2);font-size:.7rem;margin-bottom:.3rem;">
+          ${bet.selections.map(s => `<div>${s.match} <span style="color:var(--g);">(${s.selection})</span></div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bd);padding-top:.4rem;">
+          <span style="color:var(--t3);font-size:0.7rem;">@ ${bet.odds.toFixed(2)}</span>
+          <span style="color:${isWon ? 'var(--green)' : 'var(--red)'};font-weight:800;font-size:1rem;">
+            ${isWon ? '+' : '-'}₦${isWon ? bet.potentialWin.toFixed(2) : bet.stake.toFixed(2)}
+          </span>
+        </div>
+      </div>
+      `;
+    }).join('');
+  }
+  
+  if (pendingBets.length === 0 && settledBets.length === 0) {
+    html = '<p style="font-size:.78rem;color:var(--t3);padding:1rem 0;text-align:center;">No bets yet. Place a bet to see it here!</p>';
+  }
+  
+  container.innerHTML = html;
+}
+
+// Add CSS animation for live bets
+const style = document.createElement('style');
+style.textContent = `
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--red); box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50% { border-color: var(--g); box-shadow: 0 0 10px rgba(245,197,24,0.3); }
+}
+`;
+document.head.appendChild(style);
 
 // ==========================================
 // AVIATOR GAME
 // ==========================================
 let aviatorInterval;
-let aviatorCurveInterval;
 
 function toggleAviator() {
   const section = document.getElementById('aviatorSection');
@@ -1340,7 +1561,6 @@ function startAviatorRound() {
   document.getElementById('avStatus').textContent = 'Starting in 5s...';
   document.getElementById('avPath').setAttribute('d', 'M0,400 L0,400');
   
-  // Reset buttons
   [1, 2].forEach(i => {
     document.getElementById(`bet${i}Btn`).style.display = 'block';
     document.getElementById(`bet${i}Btn`).classList.remove('av-btn-cashed', 'av-btn-lost');
@@ -1361,7 +1581,6 @@ function launchAviator() {
   document.getElementById('avPlane').classList.add('flying');
   document.getElementById('avStatus').textContent = 'Flying...';
   
-  // Generate crash point (1.00 to 10.00, weighted lower)
   const crashPoint = Math.max(1.01, (Math.random() ** 2) * 10 + 1);
   
   aviatorInterval = setInterval(() => {
@@ -1372,10 +1591,8 @@ function launchAviator() {
     
     document.getElementById('avMult').textContent = state.aviator.multiplier.toFixed(2) + 'x';
     
-    // Update curve
     updateAviatorCurve();
     
-    // Check auto cashout
     [1, 2].forEach(i => {
       if (state.aviator.bets[i-1].active && !state.aviator.bets[i-1].cashed) {
         const autoVal = parseFloat(document.getElementById(`bet${i}AutoVal`).value);
@@ -1386,7 +1603,6 @@ function launchAviator() {
       }
     });
     
-    // Check crash
     if (state.aviator.multiplier >= crashPoint) {
       crashAviator();
     }
@@ -1394,8 +1610,6 @@ function launchAviator() {
 }
 
 function updateAviatorCurve() {
-  const svg = document.getElementById('avCurve');
-  const width = 1000;
   const height = 400;
   
   state.aviator.curve.push({x: (state.aviator.multiplier - 1) * 100, y: height - (state.aviator.multiplier ** 1.5)});
@@ -1405,7 +1619,6 @@ function updateAviatorCurve() {
     document.getElementById('avPath').setAttribute('d', path);
   }
   
-  // Update plane position
   const plane = document.getElementById('avPlane');
   const lastPoint = state.aviator.curve[state.aviator.curve.length - 1];
   if (lastPoint) {
@@ -1453,10 +1666,9 @@ function cashOutAviator(betNum) {
   document.getElementById(`bet${betNum}Btn`).textContent = 'Cashed: ₦' + win.toFixed(2);
   document.getElementById(`bet${betNum}Btn`).classList.add('av-btn-cashed');
   
-  addToAviatorHistory(win, state.aviator.multiplier, true);
   updateUI();
   saveUser();
-  showToast('Cashed Out!', `Won ₦${win.toFixed(2)} at ${state.aviator.multiplier.toFixed(2)}x`);
+  showToast('🎉 Cashed Out!', `Won ₦${win.toFixed(2)} at ${state.aviator.multiplier.toFixed(2)}x`);
 }
 
 function crashAviator() {
@@ -1469,37 +1681,24 @@ function crashAviator() {
   document.getElementById('avPlane').classList.add('crashed');
   document.getElementById('avStatus').textContent = 'Crashed at ' + state.aviator.multiplier.toFixed(2) + 'x';
   
-  // Handle losses
   [1, 2].forEach(i => {
     const bet = state.aviator.bets[i-1];
     if (bet.active && !bet.cashed) {
       document.getElementById(`cash${i}Btn`).classList.remove('show');
       document.getElementById(`bet${i}Btn`).style.display = 'block';
-      document.getElementById(`bet${i}Btn`).textContent = 'Lost';
+      document.getElementById(`bet${i}Btn`).textContent = 'Lost: ₦' + bet.amount.toFixed(0);
       document.getElementById(`bet${i}Btn`).classList.add('av-btn-lost');
-      addToAviatorHistory(0, state.aviator.multiplier, false);
     }
   });
   
-  // Generate hash
   const hash = '0x' + Math.random().toString(16).substr(2, 64);
   document.getElementById('hashVal').textContent = hash.substr(0, 20) + '...';
   
-  // New round in 3s
   setTimeout(() => {
     if (document.getElementById('aviatorSection').classList.contains('open')) {
       startAviatorRound();
     }
   }, 3000);
-}
-
-function addToAviatorHistory(amount, multiplier, win) {
-  const container = document.getElementById('avHistory');
-  const div = document.createElement('div');
-  div.className = 'av-h-item ' + (win ? 'av-h-win' : 'av-h-loss');
-  div.textContent = (win ? '+' : '-') + '₦' + amount.toFixed(0) + ' @ ' + multiplier.toFixed(2) + 'x';
-  container.prepend(div);
-  if (container.children.length > 10) container.lastChild.remove();
 }
 
 function stopAviator() {
@@ -1521,14 +1720,14 @@ function signup() {
   }
   
   state.user = {name, email, phone};
-  state.balance = 1000; // Welcome bonus
+  state.balance = 1000;
   state.vipPoints = 0;
   state.vipLevel = 1;
   
   saveUser();
   updateUI();
   closeModal('signupModal');
-  showToast('Welcome!', '₦1,000 bonus credited');
+  showToast('🎉 Welcome!', '₦1,000 bonus credited to your account!');
 }
 
 function login() {
@@ -1540,21 +1739,20 @@ function login() {
     return;
   }
   
-  // Simulate login
   state.user = {name: 'User', email};
   state.balance = state.balance || 5000;
   
   saveUser();
   updateUI();
   closeModal('loginModal');
-  showToast('Welcome Back!', 'Logged in successfully');
+  showToast('👋 Welcome Back!', 'Logged in successfully');
 }
 
 function logout() {
   state.user = null;
   localStorage.removeItem('treasureBetUser');
   updateUI();
-  showToast('Logged Out', 'See you soon!');
+  showToast('👋 Logged Out', 'See you soon!');
 }
 
 function updateUI() {
@@ -1588,7 +1786,7 @@ function processDep() {
   saveUser();
   updateUI();
   closeModal('depModal');
-  showToast('Success!', '₦' + amt.toLocaleString() + ' deposited');
+  showToast('✅ Success!', `₦${amt.toLocaleString()} deposited to your account`);
 }
 
 // ==========================================
@@ -1655,101 +1853,32 @@ function renderHistory() {
   }
   
   container.innerHTML = state.history.slice(0, 10).map(h => {
-    const statusColor = h.status === 'won' ? 'var(--green)' : h.status === 'lost' ? 'var(--red)' : 'var(--g)';
-    const statusText = h.status === 'won' ? 'WON' : h.status === 'lost' ? 'LOST' : 'PENDING';
+    const isWon = h.status === 'won';
+    const isLost = h.status === 'lost';
+    const isPending = h.status === 'pending';
+    
+    const statusColor = isWon ? 'var(--green)' : isLost ? 'var(--red)' : 'var(--g)';
+    const statusText = isWon ? '✅ WON' : isLost ? '❌ LOST' : '⏳ PENDING';
+    const amount = isWon ? `+₦${h.potentialWin.toFixed(2)}` : isLost ? `-₦${h.stake.toFixed(2)}` : `₦${h.potentialWin.toFixed(2)}`;
     
     return `
-    <div class="hit" style="border-left:3px solid ${statusColor};padding-left:0.5rem">
+    <div class="hit" style="border-left:3px solid ${statusColor};padding-left:0.5rem;background:${isWon ? 'rgba(34,197,94,0.05)' : isLost ? 'rgba(239,68,68,0.05)' : 'transparent'};">
       <div>
-        <div style="font-weight:600;color:var(--t)">${h.selections.length} selection${h.selections.length > 1 ? 's' : ''}</div>
-        <div style="font-size:.65rem;color:var(--t3)">${h.date}</div>
-        <div style="font-size:.65rem;color:${statusColor};font-weight:700">${statusText}</div>
+        <div style="font-weight:700;color:var(--t);">${h.selections.length} pick${h.selections.length > 1 ? 's' : ''}</div>
+        <div style="font-size:.65rem;color:var(--t3);">${h.date}</div>
+        <div style="font-size:.7rem;color:${statusColor};font-weight:800;">${statusText}</div>
       </div>
       <div style="text-align:right">
-        <div style="color:${h.status === 'won' ? 'var(--green)' : h.status === 'lost' ? 'var(--red)' : 'var(--t)'};font-weight:700">
-          ${h.status === 'won' ? '+' : h.status === 'lost' ? '-' : ''}₦${h.status === 'won' ? h.potentialWin.toFixed(2) : h.stake.toFixed(2)}
+        <div style="color:${isWon ? 'var(--green)' : isLost ? 'var(--red)' : 'var(--t)'};font-weight:800;font-size:1rem;">
+          ${amount}
         </div>
-        <div style="font-size:.65rem;color:var(--t3)">@ ${h.odds.toFixed(2)}</div>
+        <div style="font-size:.65rem;color:var(--t3);">@ ${h.odds.toFixed(2)}</div>
       </div>
     </div>
-  `}).join('');
-    renderMyBets(); // Update my bets panel
+    `;
+  }).join('');
 }
-function renderMyBets() {
-  const container = document.getElementById('myBetsList');
-  if (!container) return;
-  
-  const activeBets = state.history.filter(b => b.status === 'pending');
-  const settledBets = state.history.filter(b => b.status !== 'pending').slice(0, 5);
-  
-  let html = '';
-  
-  // Active/Pending Bets
-  if (activeBets.length > 0) {
-    html += '<div style="font-size:.7rem;color:var(--t3);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:1px;">Active</div>';
-    html += activeBets.map(bet => {
-      // Check if any match is live
-      const hasLiveMatch = bet.selections.some(s => {
-        const match = state.matches.find(m => m.id === s.matchId || `${m.home} vs ${m.away}` === s.match);
-        return match && match.isLive && !match.fullTime;
-      });
-      
-      return `
-      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:.6rem;margin-bottom:.5rem;font-size:.75rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
-          <span style="font-weight:600;color:var(--t);">${bet.selections.length} pick${bet.selections.length > 1 ? 's' : ''}</span>
-          <span class="bet-status-pending">
-            ${hasLiveMatch ? '<span class="bet-live-indicator"><span class="live-dot"></span>LIVE</span>' : 'PENDING'}
-          </span>
-        </div>
-        <div style="color:var(--t2);font-size:.7rem;margin-bottom:.2rem;">
-          ${bet.selections.map(s => {
-            const match = state.matches.find(m => m.id === s.matchId || `${m.home} vs ${m.away}` === s.match);
-            const score = match ? `${match.score.home}-${match.score.away}` : 'vs';
-            return `<div>${s.match.split(' vs ')[0]} ${score} ${s.match.split(' vs ')[1]} <span style="color:var(--g)">(${s.selection})</span></div>`;
-          }).join('')}
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bd);padding-top:.3rem;margin-top:.3rem;">
-          <span style="color:var(--t3);">Stake: ₦${bet.stake.toFixed(0)}</span>
-          <span style="color:var(--g);font-weight:600;">Win: ₦${bet.potentialWin.toFixed(0)}</span>
-        </div>
-      </div>
-      `;
-    }).join('');
-  }
-  
-  // Settled Bets (Recent)
-  if (settledBets.length > 0) {
-    html += '<div style="font-size:.7rem;color:var(--t3);margin:.8rem 0 .5rem;text-transform:uppercase;letter-spacing:1px;">Recent Results</div>';
-    html += settledBets.map(bet => {
-      const statusClass = bet.status === 'won' ? 'bet-status-won' : 'bet-status-lost';
-      const statusText = bet.status === 'won' ? 'WON' : 'LOST';
-      const amount = bet.status === 'won' ? `+₦${bet.potentialWin.toFixed(0)}` : `-₦${bet.stake.toFixed(0)}`;
-      
-      return `
-      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:.6rem;margin-bottom:.5rem;font-size:.75rem;opacity:0.8;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
-          <span style="font-weight:600;color:var(--t);">${bet.selections.length} pick${bet.selections.length > 1 ? 's' : ''}</span>
-          <span class="${statusClass}">${statusText}</span>
-        </div>
-        <div style="color:var(--t2);font-size:.7rem;margin-bottom:.2rem;">
-          ${bet.selections.map(s => `<div>${s.match} <span style="color:var(--g)">(${s.selection})</span></div>`).join('')}
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bd);padding-top:.3rem;margin-top:.3rem;">
-          <span style="color:var(--t3);">@ ${bet.odds.toFixed(2)}</span>
-          <span class="${statusClass}" style="font-weight:700;">${amount}</span>
-        </div>
-      </div>
-      `;
-    }).join('');
-  }
-  
-  if (activeBets.length === 0 && settledBets.length === 0) {
-    html = '<p style="font-size:.78rem;color:var(--t3)">No bets yet</p>';
-  }
-  
-  container.innerHTML = html;
-}
+
 function showReceipt(bet) {
   document.getElementById('rRef').textContent = bet.id;
   document.getElementById('rDate').textContent = bet.date;
@@ -1766,7 +1895,6 @@ function showReceipt(bet) {
     </div>
   `).join('');
   
-  // Generate barcode
   const svg = document.getElementById('rBC');
   let bars = '';
   for (let i = 0; i < 40; i++) {
@@ -1852,7 +1980,7 @@ function updateJackpot() {
 function copyRef() {
   const code = document.getElementById('refCode').textContent;
   navigator.clipboard.writeText(code);
-  showToast('Copied!', 'Referral code copied');
+  showToast('✅ Copied!', 'Referral code copied to clipboard');
 }
 
 function openModal(id) {
@@ -1894,7 +2022,7 @@ function showToast(title, msg) {
   document.getElementById('tth').textContent = title;
   document.getElementById('ttm').textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+  setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
 function selPay(btn, method) {
@@ -1903,7 +2031,7 @@ function selPay(btn, method) {
 }
 
 function shareBet() {
-  showToast('Shared!', 'Bet shared to Twitter');
+  showToast('✅ Shared!', 'Bet shared to Twitter');
 }
 </script>
 </body>
