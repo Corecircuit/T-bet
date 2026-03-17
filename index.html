@@ -952,7 +952,7 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
 </div><!-- end mainContent -->
 
 <script>
-// STATE MANAGEMENT
+    // STATE MANAGEMENT
 let user = JSON.parse(localStorage.getItem('tb_user')) || null;
 let balance = parseFloat(localStorage.getItem('tb_balance')) || 0;
 let bets = JSON.parse(localStorage.getItem('tb_bets')) || [];
@@ -986,6 +986,7 @@ const bankNames = {
 // INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  checkAutoLogin(); // ADD THIS BACK
   updateUI();
   initMatches();
   renderMatches();
@@ -994,7 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
   startJackpot();
   initAviator();
   
-  // START THE SCHEDULED MATCHES CYCLE
+  // ADD THIS - Start the cycle
   startScheduledMatchesCycle();
   
   if(user) {
@@ -1003,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// THEME
+// THEME SYSTEM
 function initTheme() {
   const saved = localStorage.getItem('tb_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
@@ -1023,56 +1024,183 @@ function updateThemeIcon(theme) {
   icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
 }
 
-// AUTH
+// CHECK AUTO LOGIN - ADD THIS BACK IF MISSING
+function checkAutoLogin() {
+  const remembered = localStorage.getItem('tb_remember') === 'true';
+  const savedUser = localStorage.getItem('tb_user');
+  if(remembered && savedUser) {
+    user = JSON.parse(savedUser);
+    updateUI();
+    document.getElementById('vc').classList.add('on');
+    updateVIP();
+  }
+}
+
+// AUTHENTICATION SYSTEM
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone) {
+  return /^0[7-9][0-1][0-9]{8}$/.test(phone);
+}
+
+function validatePassword(pass) {
+  return pass.length >= 6;
+}
+
 function login() {
-  const email = document.getElementById('loginEmail').value;
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
- 
+  const remember = document.getElementById('rememberMe').checked;
+  
   if(!email || !pass) {
-    showToast('Error', 'Please fill all fields', 'error');
+    showToast('Error', 'Please fill in all fields', 'error');
     return;
   }
- 
+  
+  if(!validateEmail(email)) {
+    showToast('Error', 'Please enter a valid email address', 'error');
+    return;
+  }
+  
+  // Check against user database
+  const usersDB = JSON.parse(localStorage.getItem('tb_usersDB')) || [];
+  const foundUser = usersDB.find(u => u.email === email && u.password === pass);
+  
+  if(!foundUser) {
+    showToast('Error', 'Invalid email or password', 'error');
+    return;
+  }
+  
   user = {
-    name: email.split('@')[0],
-    email: email,
-    phone: '08012345678',
-    joined: new Date().toISOString()
+    name: foundUser.name,
+    email: foundUser.email,
+    phone: foundUser.phone,
+    joined: foundUser.joined,
+    id: foundUser.id
   };
- 
+  
+  if(remember) {
+    localStorage.setItem('tb_remember', 'true');
+  }
+  
   localStorage.setItem('tb_user', JSON.stringify(user));
   closeModal('loginModal');
   updateUI();
-  showToast('Welcome Back!', 'Successfully logged in');
+  showToast('Welcome Back!', `Good to see you, ${user.name}!`);
   document.getElementById('vc').classList.add('on');
+  updateVIP();
+  
+  // Clear form
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('rememberMe').checked = false;
 }
 
 function register() {
-  const name = document.getElementById('regName').value;
-  const email = document.getElementById('regEmail').value;
-  const phone = document.getElementById('regPhone').value;
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const phone = document.getElementById('regPhone').value.trim();
   const pass = document.getElementById('regPass').value;
- 
+  const passConfirm = document.getElementById('regPassConfirm').value;
+  const agree = document.getElementById('agreeTerms').checked;
+  
+  // Validation
   if(!name || !email || !phone || !pass) {
-    showToast('Error', 'Please fill all fields', 'error');
+    showToast('Error', 'Please fill in all fields', 'error');
     return;
   }
- 
-  user = {name, email, phone, joined: new Date().toISOString()};
-  balance = 1000; // Welcome bonus
- 
+  
+  if(name.length < 3) {
+    showToast('Error', 'Name must be at least 3 characters', 'error');
+    return;
+  }
+  
+  if(!validateEmail(email)) {
+    showToast('Error', 'Please enter a valid email address', 'error');
+    return;
+  }
+  
+  if(!validatePhone(phone)) {
+    showToast('Error', 'Please enter a valid Nigerian phone number (e.g., 08012345678)', 'error');
+    return;
+  }
+  
+  if(!validatePassword(pass)) {
+    showToast('Error', 'Password must be at least 6 characters', 'error');
+    return;
+  }
+  
+  if(pass !== passConfirm) {
+    showToast('Error', 'Passwords do not match', 'error');
+    return;
+  }
+  
+  if(!agree) {
+    showToast('Error', 'You must agree to the Terms of Service', 'error');
+    return;
+  }
+  
+  // Check if email already exists
+  let usersDB = JSON.parse(localStorage.getItem('tb_usersDB')) || [];
+  if(usersDB.find(u => u.email === email)) {
+    showToast('Error', 'Email already registered. Please login.', 'error');
+    setTimeout(() => {
+      closeModal('signupModal');
+      openModal('loginModal');
+    }, 1500);
+    return;
+  }
+  
+  // Create new user
+  const newUser = {
+    name: name,
+    email: email,
+    phone: phone,
+    password: pass,
+    joined: new Date().toISOString(),
+    id: 'TBU' + Date.now()
+  };
+  
+  // Save to database
+  usersDB.push(newUser);
+  localStorage.setItem('tb_usersDB', JSON.stringify(usersDB));
+  
+  // Set as current user
+  user = {
+    name: newUser.name,
+    email: newUser.email,
+    phone: newUser.phone,
+    joined: newUser.joined,
+    id: newUser.id
+  };
+  
   localStorage.setItem('tb_user', JSON.stringify(user));
+  
+  // Give welcome bonus
+  balance = 1000;
   localStorage.setItem('tb_balance', balance);
- 
+  
   closeModal('signupModal');
   updateUI();
-  showToast('Welcome Bonus!', '₦1,000 credited to your account');
+  showToast('🎉 Account Created!', '₦1,000 welcome bonus credited!');
   document.getElementById('vc').classList.add('on');
+  updateVIP();
+  
+  // Clear form
+  document.getElementById('regName').value = '';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regPhone').value = '';
+  document.getElementById('regPass').value = '';
+  document.getElementById('regPassConfirm').value = '';
+  document.getElementById('agreeTerms').checked = false;
 }
 
 function logout() {
   user = null;
   localStorage.removeItem('tb_user');
+  localStorage.removeItem('tb_remember');
   location.reload();
 }
 
@@ -1082,7 +1210,7 @@ function updateUI() {
   const loginBtn = document.getElementById('loginBtn');
   const signupBtn = document.getElementById('signupBtn');
   const logoutBtn = document.getElementById('logoutBtn');
- 
+  
   if(user) {
     bp.classList.add('on');
     dbs.classList.add('on');
@@ -1105,7 +1233,7 @@ function qDep(amount) {
     openModal('loginModal');
     return;
   }
-  document.getElementById('depAmount').value = amount;
+  document.getElementById('depAmount').value = amount || '';
   openModal('depositModal');
 }
 
@@ -1113,32 +1241,37 @@ function selectDepMethod(method, btn) {
   selectedDepMethod = method;
   document.querySelectorAll('#depositModal .bko').forEach(b => b.classList.remove('sl'));
   btn.classList.add('sl');
- 
+  
   const details = document.getElementById('depDetails');
   const label = document.getElementById('depLabel');
   const input = document.getElementById('depDetail');
- 
+  
   details.style.display = 'block';
- 
-  if(method === 'transfer') {
-    label.textContent = 'Bank Account Number';
-    input.placeholder = 'Enter 10-digit account number';
-  } else if(method === 'ussd') {
-    label.textContent = 'Phone Number';
-    input.placeholder = 'Enter phone number for USSD';
-  } else if(method === 'card') {
-    label.textContent = 'Card Number';
-    input.placeholder = 'Enter card number';
-  } else {
-    label.textContent = 'Wallet Address';
-    input.placeholder = 'Enter crypto wallet address';
+  
+  switch(method) {
+    case 'transfer':
+      label.textContent = 'Bank Account Number';
+      input.placeholder = 'Enter 10-digit NUBAN';
+      break;
+    case 'ussd':
+      label.textContent = 'Phone Number';
+      input.placeholder = 'Enter phone for USSD *737#';
+      break;
+    case 'card':
+      label.textContent = 'Card Number';
+      input.placeholder = 'Enter 16-digit card number';
+      break;
+    case 'crypto':
+      label.textContent = 'USDT Wallet Address (TRC20)';
+      input.placeholder = 'Enter TRC20 address';
+      break;
   }
 }
 
 function processDeposit() {
   const amount = parseFloat(document.getElementById('depAmount').value);
-  const detail = document.getElementById('depDetail').value;
- 
+  const detail = document.getElementById('depDetail').value.trim();
+  
   if(!amount || amount < 100) {
     showToast('Error', 'Minimum deposit is ₦100', 'error');
     return;
@@ -1151,27 +1284,46 @@ function processDeposit() {
     showToast('Error', 'Fill in required details', 'error');
     return;
   }
- 
+  
+  // Validate based on method
+  if(selectedDepMethod === 'transfer' && detail.length !== 10) {
+    showToast('Error', 'Enter valid 10-digit account number', 'error');
+    return;
+  }
+  if(selectedDepMethod === 'ussd' && !validatePhone(detail)) {
+    showToast('Error', 'Enter valid phone number', 'error');
+    return;
+  }
+  
   // Simulate processing
-  showToast('Processing...', 'Please wait while we process your deposit');
- 
+  const btn = document.querySelector('#depositModal .msb');
+  const originalText = btn.textContent;
+  btn.textContent = 'Processing...';
+  btn.disabled = true;
+  
   setTimeout(() => {
     balance += amount;
     localStorage.setItem('tb_balance', balance);
     updateUI();
     closeModal('depositModal');
     showToast('Deposit Successful!', `₦${amount.toLocaleString()} added to your balance`);
-   
-    // Add VIP points for deposit
+    
     vipPoints += Math.floor(amount / 100);
     localStorage.setItem('tb_vip', vipPoints);
     updateVIP();
+    
+    // Reset form
+    btn.textContent = originalText;
+    btn.disabled = false;
+    document.getElementById('depAmount').value = '';
+    document.getElementById('depDetail').value = '';
+    document.getElementById('depDetails').style.display = 'none';
+    document.querySelectorAll('#depositModal .bko').forEach(b => b.classList.remove('sl'));
   }, 2000);
 }
 
 // MATCH SIMULATION SYSTEM
 function initMatches() {
-  // Initialize match states
   matchesData.forEach(m => {
     if(m.live && !matchStates[m.id]) {
       startMatchSimulation(m.id);
@@ -1182,20 +1334,19 @@ function initMatches() {
 function startMatchSimulation(matchId) {
   const match = matchesData.find(m => m.id === matchId);
   if(!match || matchStates[matchId]) return;
- 
+  
   matchStates[matchId] = {
     minute: 1,
-    period: 'first', // first, ht, second, ft
+    period: 'first',
     homeScore: parseInt(match.score?.split('-')[0]) || 0,
     awayScore: parseInt(match.score?.split('-')[1]) || 0,
     events: []
   };
- 
-  // 1.5 minutes = 90 seconds for 45 minutes = 2 seconds per minute
+  
   const interval = setInterval(() => {
     updateMatch(matchId);
   }, 2000);
- 
+  
   matchIntervals[matchId] = interval;
 }
 
@@ -1203,81 +1354,75 @@ function updateMatch(matchId) {
   const state = matchStates[matchId];
   const match = matchesData.find(m => m.id === matchId);
   if(!state || !match) return;
- 
+  
   if(state.period === 'first') {
     state.minute++;
     match.time = state.minute + '\'';
-   
-    // Random goal chance (2% per minute)
+    
     if(Math.random() < 0.02) {
       if(Math.random() < 0.5) state.homeScore++;
       else state.awayScore++;
       state.events.push({min: state.minute, type: 'goal'});
       match.score = `${state.homeScore}-${state.awayScore}`;
-      showToast('GOAL!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`, 'success');
+      showToast('⚽ GOAL!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`, 'success');
     }
-   
-   // REPLACE this section in updateMatch():
-if(state.minute >= 45) {
-  state.period = 'ht';
-  match.time = 'HT';
-  match.ht = true;
-  showToast('Half Time', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`);
-  
-  // REMOVE this setTimeout that resets to 46'
-  // Instead, continue from 46 after HT without losing progress
-  setTimeout(() => {
-    state.period = 'second';
-    state.minute = 46; // Continue from 46, not reset
-    match.ht = false;
-    match.time = '46\'';
-  }, 5000); // Reduced to 5 seconds for better UX
-}
+    
+    if(state.minute >= 45) {
+      state.period = 'ht';
+      match.time = 'HT';
+      match.ht = true;
+      showToast('⏸️ Half Time', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`);
+      
+      setTimeout(() => {
+        state.period = 'second';
+        state.minute = 46; // Continue from 46, not 45
+        match.ht = false;
+        match.time = '46\'';
+      }, 5000); // 5 seconds HT
+    }
   } else if(state.period === 'second') {
     state.minute++;
     match.time = state.minute + '\'';
-   
-    // Random goal chance
+    
     if(Math.random() < 0.02) {
       if(Math.random() < 0.5) state.homeScore++;
       else state.awayScore++;
       state.events.push({min: state.minute, type: 'goal'});
       match.score = `${state.homeScore}-${state.awayScore}`;
-      showToast('GOAL!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`, 'success');
+      showToast('⚽ GOAL!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`, 'success');
     }
-   
+    
     if(state.minute >= 90) {
       endMatch(matchId);
     }
   }
- 
+  
   renderMatches();
-  checkBets(matchId);
 }
 
 function endMatch(matchId) {
   clearInterval(matchIntervals[matchId]);
   const state = matchStates[matchId];
   const match = matchesData.find(m => m.id === matchId);
- 
+  
   state.period = 'ft';
   match.live = false;
   match.time = 'FT';
   match.ft = true;
- 
+  
   let result;
   if(state.homeScore > state.awayScore) result = '1';
   else if(state.homeScore < state.awayScore) result = '2';
   else result = 'X';
- 
+  
   state.result = result;
   match.result = result;
- 
-  showToast('Full Time!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`);
+  
+  showToast('🏁 Full Time!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`);
   renderMatches();
   settleBets(matchId, result);
   
-  // Remove finished match after 10 seconds and spawn SCHEDULED match
+  // After 10 seconds, remove and spawn scheduled match
   setTimeout(() => {
     const idx = matchesData.findIndex(m => m.id === matchId);
     if(idx > -1) {
@@ -1285,115 +1430,58 @@ function endMatch(matchId) {
       delete matchStates[matchId];
       delete matchIntervals[matchId];
       renderMatches();
-      spawnScheduledMatch(); // Spawn scheduled (not live)
+      spawnScheduledMatch();
     }
   }, 10000);
 }
-function spawnRandomMatch() {
-  // Just call the scheduled version
-  spawnScheduledMatch();
-}
-  
-  const leagueIdx = Math.floor(Math.random() * leagues.length);
-  const leagueTeams = teams[leagueIdx % teams.length];
-  const home = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  let away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  while(away === home) away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  
-  const newId = Math.max(...matchesData.map(m => m.id)) + 1;
-  const isLive = Math.random() > 0.5;
-  
-  const newMatch = {
-    id: newId,
-    sport: 'football',
-    league: leagues[leagueIdx],
-    live: isLive,
-    time: isLive ? '1\'' : 'Tomorrow ' + (16 + Math.floor(Math.random()*8)) + ':00',
-    home: home,
-    away: away,
-    hOdds: parseFloat((1.3 + Math.random()*3).toFixed(2)),
-    dOdds: parseFloat((2.8 + Math.random()*2).toFixed(2)),
-    aOdds: parseFloat((1.5 + Math.random()*4).toFixed(2)),
-    score: isLive ? '0-0' : null,
-    ht: false,
-    ft: false
-  };
-  
-  matchesData.push(newMatch);
-  if(isLive) startMatchSimulation(newId);
-  renderMatches();
-  
-  showToast('New Match!', `${home} vs ${away} added`);
-}
-
-function checkBets(matchId) {
-  // Update live bets status
-  bets.forEach(bet => {
-    if(bet.status === 'pending') {
-      const hasMatch = bet.selections.some(s => s.matchId === matchId);
-      if(hasMatch) {
-        // Update potential win based on current score
-      }
-    }
-  });
-}
 
 function settleBets(matchId, result) {
-  const state = matchStates[matchId];
- 
   bets.forEach(bet => {
     if(bet.status === 'pending') {
       const matchBet = bet.selections.find(s => s.matchId === matchId);
       if(matchBet) {
-        // Check if this specific selection won
         const won = matchBet.selection === result;
-       
-        // For single bets, settle immediately
+        
         if(bet.type === 'Single') {
           if(won) {
             bet.status = 'won';
             const winAmount = bet.potentialWin;
             balance += winAmount;
-           
-            // Show result modal
-            showResult('WINNER!', 'Congratulations! Your bet was successful', winAmount, true);
+            showResult('🎉 WINNER!', `Congratulations! You won`, winAmount, true);
           } else {
             bet.status = 'lost';
-            showResult('LOST', 'Better luck next time!', bet.stake, false);
+            showResult('😔 LOST', 'Better luck next time!', bet.stake, false);
           }
-         
           localStorage.setItem('tb_balance', balance);
           updateUI();
-        }
-        // For accumulators, check if all matches are finished
-        else {
+        } else {
           const allFinished = bet.selections.every(s => {
             const m = matchesData.find(md => md.id === s.matchId);
             return !m.live || m.ft;
           });
-         
+          
           if(allFinished) {
             const allWon = bet.selections.every(s => {
               const m = matchesData.find(md => md.id === s.matchId);
               const ms = matchStates[s.matchId];
               return s.selection === ms?.result;
             });
-           
+            
             if(allWon) {
               bet.status = 'won';
               const winAmount = bet.potentialWin;
               balance += winAmount;
-              showResult('BIG WINNER!', 'Your accumulator hit!', winAmount, true);
+              showResult('🏆 BIG WINNER!', 'Your accumulator won!', winAmount, true);
             } else {
               bet.status = 'lost';
               showResult('Accumulator Lost', 'One or more selections failed', bet.stake, false);
             }
-           
+            
             localStorage.setItem('tb_balance', balance);
             updateUI();
           }
         }
-       
+        
         localStorage.setItem('tb_bets', JSON.stringify(bets));
         renderMyBets();
       }
@@ -1407,30 +1495,27 @@ function showResult(title, msg, amount, isWin) {
   const titleEl = document.getElementById('resultTitle');
   const msgEl = document.getElementById('resultMsg');
   const amtEl = document.getElementById('resultAmount');
- 
+  
   if(isWin) {
-    icon.innerHTML = '🎉';
+    icon.textContent = '🎉';
     titleEl.style.color = 'var(--green)';
+    titleEl.textContent = 'WINNER!';
     amtEl.textContent = '+₦' + amount.toLocaleString();
     amtEl.style.color = 'var(--green)';
-   
-    // Confetti effect
     createConfetti();
   } else {
-    icon.innerHTML = '😔';
+    icon.textContent = '😔';
     titleEl.style.color = 'var(--red)';
+    titleEl.textContent = 'LOST';
     amtEl.textContent = '-₦' + amount.toLocaleString();
     amtEl.style.color = 'var(--red)';
   }
- 
-  titleEl.textContent = title;
+  
   msgEl.textContent = msg;
- 
   openModal('resultModal');
 }
 
 function createConfetti() {
-  // Simple confetti animation
   for(let i=0; i<50; i++) {
     const conf = document.createElement('div');
     conf.style.cssText = `
@@ -1448,14 +1533,112 @@ function createConfetti() {
   }
 }
 
-// Add confetti animation
 const style = document.createElement('style');
-style.textContent = `
-  @keyframes fall {
-    to {transform:translateY(100vh) rotate(360deg)}
-  }
-`;
+style.textContent = `@keyframes fall { to {transform:translateY(100vh) rotate(360deg)} }`;
 document.head.appendChild(style);
+
+// SCHEDULED MATCHES CYCLE SYSTEM - ADD THESE FUNCTIONS
+
+function spawnScheduledMatch(timeSlot) {
+  const leagues = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'NPFL', 'Champions League', 'Europa League', 'FA Cup', 'Carabao Cup'];
+  const teams = [
+    ['Man City', 'Liverpool', 'Arsenal', 'Chelsea', 'Man United', 'Tottenham', 'Newcastle', 'Brighton', 'Aston Villa', 'West Ham', 'Brentford', 'Crystal Palace'],
+    ['Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla', 'Valencia', 'Villarreal', 'Real Sociedad', 'Betis', 'Getafe', 'Celta Vigo'],
+    ['Juventus', 'AC Milan', 'Inter Milan', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina', 'Torino', 'Bologna'],
+    ['Bayern Munich', 'Dortmund', 'RB Leipzig', 'Bayer Leverkusen', 'Eintracht Frankfurt', 'Wolfsburg', 'Freiburg', 'Stuttgart'],
+    ['Enyimba', 'Kano Pillars', 'Rangers Int', 'Shooting Stars', 'Remo Stars', 'Plateau United', 'MFM FC', 'Lobi Stars', 'Akwa United', 'Rivers United'],
+    ['PSG', 'Marseille', 'Lyon', 'Monaco', 'Lille', 'Nice', 'Rennes', 'Lens']
+  ];
+  
+  const leagueIdx = Math.floor(Math.random() * leagues.length);
+  const leagueTeams = teams[leagueIdx % teams.length];
+  const home = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
+  let away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
+  while(away === home) away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
+  
+  const newId = Date.now() + Math.floor(Math.random() * 1000);
+  
+  const timeSlots = ['Today 15:00', 'Today 18:00', 'Today 21:00', 'Tomorrow 14:00', 'Tomorrow 16:00', 'Tomorrow 18:30', 'Tomorrow 20:00', 'Tonight 19:00', 'Tonight 22:00'];
+  const newTimeSlot = timeSlot || timeSlots[Math.floor(Math.random() * timeSlots.length)];
+  
+  const newMatch = {
+    id: newId,
+    sport: 'football',
+    league: leagues[leagueIdx],
+    live: false,
+    time: newTimeSlot,
+    home: home,
+    away: away,
+    hOdds: parseFloat((1.3 + Math.random()*3).toFixed(2)),
+    dOdds: parseFloat((2.8 + Math.random()*2).toFixed(2)),
+    aOdds: parseFloat((1.5 + Math.random()*4).toFixed(2)),
+    score: null,
+    ht: false,
+    ft: false,
+    startTime: null,
+    willStartAt: null,
+    converting: false
+  };
+  
+  matchesData.push(newMatch);
+  renderMatches();
+  console.log(`Spawned scheduled: ${home} vs ${away} at ${newTimeSlot}`);
+}
+
+function convertToLive(match) {
+  const oldTime = match.time;
+  
+  match.live = true;
+  match.time = '1\'';
+  match.score = '0-0';
+  
+  matchStates[match.id] = {
+    minute: 1,
+    period: 'first',
+    homeScore: 0,
+    awayScore: 0,
+    events: []
+  };
+  
+  const interval = setInterval(() => {
+    updateMatch(match.id);
+  }, 2000);
+  matchIntervals[match.id] = interval;
+  
+  showToast('🔴 Match Started!', `${match.home} vs ${match.away} is now LIVE`);
+  renderMatches();
+  
+  // Spawn replacement scheduled match after 5 seconds
+  setTimeout(() => {
+    spawnScheduledMatch();
+  }, 5000);
+}
+
+function startScheduledMatchesCycle() {
+  // Check every 10 seconds
+  setInterval(() => {
+    const now = Date.now();
+    
+    matchesData.forEach(match => {
+      // Only process scheduled matches (not live, not finished, string time)
+      if (!match.live && !match.ft && !match.ht && typeof match.time === 'string' && !match.time.includes('\'')) {
+        
+        // Initialize start time if not set
+        if (!match.startTime) {
+          match.startTime = now;
+          match.willStartAt = now + 120000; // 2 minutes = 120000ms
+          console.log(`Match ${match.home} vs ${match.away} will start at ${new Date(match.willStartAt).toLocaleTimeString()}`);
+        }
+        
+        // Check if it's time to start
+        if (now >= match.willStartAt && !match.converting) {
+          match.converting = true;
+          convertToLive(match);
+        }
+      }
+    });
+  }, 10000);
+}
 
 // MATCHES DATA
 const matchesData = [
@@ -1484,7 +1667,7 @@ const matchesData = [
   {id: 14, sport: 'football', league: 'Ligue 1', live: false, time: 'Today 21:00', home: 'PSG', away: 'Marseille', hOdds: 1.45, dOdds: 4.50, aOdds: 6.50, score: null, ht: false, ft: false},
   {id: 15, sport: 'football', league: 'Ligue 1', live: true, time: '78\'', home: 'Lyon', away: 'Monaco', hOdds: 2.30, dOdds: 3.40, aOdds: 3.00, score: '0-2', ht: false, ft: false},
   
-  // FOOTBALL - Nigeria (NPFL)
+  // FOOTBALL - Nigeria
   {id: 16, sport: 'football', league: 'NPFL', live: true, time: '23\'', home: 'Enyimba', away: 'Kano Pillars', hOdds: 1.80, dOdds: 3.40, aOdds: 4.40, score: '0-0', ht: false, ft: false},
   {id: 17, sport: 'football', league: 'NPFL', live: false, time: 'Tomorrow 16:00', home: 'Rangers Int', away: 'Shooting Stars', hOdds: 1.95, dOdds: 3.30, aOdds: 3.90, score: null, ht: false, ft: false},
   {id: 18, sport: 'football', league: 'NPFL', live: false, time: 'Sunday 15:00', home: 'Remo Stars', away: 'Plateau United', hOdds: 2.10, dOdds: 3.20, aOdds: 3.60, score: null, ht: false, ft: false},
@@ -1511,25 +1694,21 @@ const matchesData = [
   {id: 29, sport: 'basketball', league: 'EuroLeague', live: true, time: 'Q2 04:20', home: 'Real Madrid', away: 'Barcelona', hOdds: 1.75, dOdds: null, aOdds: 2.10, score: '38-42', ht: false, ft: false},
   {id: 30, sport: 'basketball', league: 'EuroLeague', live: false, time: 'Tomorrow 19:00', home: 'Olympiacos', away: 'Panathinaikos', hOdds: 1.85, dOdds: null, aOdds: 2.00, score: null, ht: false, ft: false},
   
-  // BASKETBALL - Nigeria (NBBF)
+  // BASKETBALL - Nigeria
   {id: 31, sport: 'basketball', league: 'Nigerian Premier League', live: false, time: 'Saturday 16:00', home: 'Rivers Hoopers', away: 'Kano Pillars', hOdds: 1.70, dOdds: null, aOdds: 2.20, score: null, ht: false, ft: false},
   
-  // TENNIS - Grand Slams
+  // TENNIS
   {id: 32, sport: 'tennis', league: 'Wimbledon', live: true, time: 'Set 3', home: 'Alcaraz', away: 'Djokovic', hOdds: 1.45, dOdds: null, aOdds: 2.80, score: '1-1', ht: false, ft: false},
   {id: 33, sport: 'tennis', league: 'Wimbledon', live: false, time: 'Tomorrow 13:00', home: 'Sinner', away: 'Medvedev', hOdds: 1.65, dOdds: null, aOdds: 2.30, score: null, ht: false, ft: false},
   {id: 34, sport: 'tennis', league: 'French Open', live: true, time: 'Set 2', home: 'Nadal', away: 'Federer', hOdds: 1.80, dOdds: null, aOdds: 2.10, score: '1-0', ht: false, ft: false},
   {id: 35, sport: 'tennis', league: 'US Open', live: false, time: 'Monday 20:00', home: 'Swiatek', away: 'Sabalenka', hOdds: 1.55, dOdds: null, aOdds: 2.50, score: null, ht: false, ft: false},
-  
-  // TENNIS - ATP Tour
   {id: 36, sport: 'tennis', league: 'ATP Masters', live: true, time: 'Set 1', home: 'Rune', away: 'Tsitsipas', hOdds: 2.10, dOdds: null, aOdds: 1.75, score: '2-3', ht: false, ft: false},
   
-  // CRICKET - International
+  // CRICKET
   {id: 37, sport: 'cricket', league: 'IPL', live: true, time: '15.2 ov', home: 'Mumbai Indians', away: 'Chennai Super Kings', hOdds: 1.90, dOdds: null, aOdds: 1.95, score: '156/3', ht: false, ft: false},
   {id: 38, sport: 'cricket', league: 'IPL', live: false, time: 'Tomorrow 16:00', home: 'RCB', away: 'KKR', hOdds: 1.85, dOdds: null, aOdds: 2.00, score: null, ht: false, ft: false},
   {id: 39, sport: 'cricket', league: 'Big Bash', live: true, time: '12.4 ov', home: 'Sydney Sixers', away: 'Melbourne Stars', hOdds: 1.75, dOdds: null, aOdds: 2.15, score: '98/2', ht: false, ft: false},
   {id: 40, sport: 'cricket', league: 'The Ashes', live: false, time: 'Thursday 11:00', home: 'England', away: 'Australia', hOdds: 2.20, dOdds: null, aOdds: 1.70, score: null, ht: false, ft: false},
-  
-  // CRICKET - T20 Leagues
   {id: 41, sport: 'cricket', league: 'PSL', live: false, time: 'Saturday 14:00', home: 'Karachi Kings', away: 'Lahore Qalandars', hOdds: 1.90, dOdds: null, aOdds: 1.95, score: null, ht: false, ft: false},
   
   // ESPORTS
@@ -1545,175 +1724,19 @@ const matchesData = [
   {id: 49, sport: 'rugby', league: 'Six Nations', live: true, time: '52\'', home: 'England', away: 'Wales', hOdds: 1.70, dOdds: 4.00, aOdds: 4.50, score: '15-10', ht: false, ft: false},
   {id: 50, sport: 'rugby', league: 'Rugby World Cup', live: false, time: 'Friday 20:00', home: 'New Zealand', away: 'South Africa', hOdds: 1.60, dOdds: 4.50, aOdds: 5.20, score: null, ht: false, ft: false},
   {id: 51, sport: 'rugby', league: 'Premiership', live: true, time: '34\'', home: 'Leicester Tigers', away: 'Saracens', hOdds: 2.20, dOdds: 3.40, aOdds: 3.20, score: '7-12', ht: false, ft: false},
-  
-  // ADD MORE AS NEEDED...
 ];
-// Convert scheduled matches to live after 2 minutes
-function startScheduledMatchesCycle() {
-  // Run every 10 seconds to check
-  setInterval(() => {
-    const now = Date.now();
-    
-    matchesData.forEach(match => {
-      // Only process non-live, non-finished matches with time strings
-      if (!match.live && !match.ft && !match.ht && typeof match.time === 'string') {
-        
-        // Check if this match has a startTime (when it was created)
-        if (!match.startTime) {
-          match.startTime = now;
-          match.willStartAt = now + 120000; // 2 minutes = 120000ms
-        }
-        
-        // If 2 minutes passed, convert to live match
-        if (now >= match.willStartAt && !match.converting) {
-          match.converting = true; // Prevent double conversion
-          convertToLive(match);
-        }
-      }
-    });
-  }, 10000); // Check every 10 seconds
-}
 
-// Convert a scheduled match to live
-function convertToLive(match) {
-  const oldTime = match.time;
-  
-  // Convert to live match
-  match.live = true;
-  match.time = '1\'';
-  match.score = '0-0';
-  
-  // Initialize match state
-  matchStates[match.id] = {
-    minute: 1,
-    period: 'first',
-    homeScore: 0,
-    awayScore: 0,
-    events: []
-  };
-  
-  // Start simulation
-  const interval = setInterval(() => {
-    updateMatch(match.id);
-  }, 2000);
-  matchIntervals[match.id] = interval;
-  
-  showToast('Match Started!', `${match.home} vs ${match.away} is now LIVE`);
-  renderMatches();
-  
-  // Spawn a replacement scheduled match
-  setTimeout(() => {
-    spawnScheduledMatch(oldTime); // Pass the old time slot to replace
-  }, 5000); // 5 second delay before spawning replacement
-}
-
-// Spawn a new scheduled match (not live)
-function spawnScheduledMatch(timeSlot) {
-  const leagues = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'NPFL', 'Champions League', 'Europa League', 'FA Cup', 'Carabao Cup'];
-  const teams = [
-    ['Man City', 'Liverpool', 'Arsenal', 'Chelsea', 'Man United', 'Tottenham', 'Newcastle', 'Brighton', 'Aston Villa', 'West Ham', 'Brentford', 'Crystal Palace'],
-    ['Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla', 'Valencia', 'Villarreal', 'Real Sociedad', 'Betis', 'Getafe', 'Celta Vigo'],
-    ['Juventus', 'AC Milan', 'Inter Milan', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina', 'Torino', 'Bologna'],
-    ['Bayern Munich', 'Dortmund', 'RB Leipzig', 'Bayer Leverkusen', 'Eintracht Frankfurt', 'Wolfsburg', 'Freiburg', 'Stuttgart'],
-    ['Enyimba', 'Kano Pillars', 'Rangers Int', 'Shooting Stars', 'Remo Stars', 'Plateau United', 'MFM FC', 'Lobi Stars', 'Akwa United', 'Rivers United'],
-    ['PSG', 'Marseille', 'Lyon', 'Monaco', 'Lille', 'Nice', 'Rennes', 'Lens']
-  ];
-  
-  const leagueIdx = Math.floor(Math.random() * leagues.length);
-  const leagueTeams = teams[leagueIdx % teams.length];
-  const home = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  let away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  while(away === home) away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
-  
-  const newId = Math.max(...matchesData.map(m => m.id), 0) + 1;
-  
-  // Cycle through time slots
-  const timeSlots = ['Today 15:00', 'Today 18:00', 'Today 21:00', 'Tomorrow 14:00', 'Tomorrow 16:00', 'Tomorrow 18:30', 'Tomorrow 20:00', 'Tonight 19:00', 'Tonight 22:00'];
-  const newTimeSlot = timeSlots[Math.floor(Math.random() * timeSlots.length)];
-  
-  const newMatch = {
-    id: newId,
-    sport: 'football',
-    league: leagues[leagueIdx],
-    live: false,
-    time: newTimeSlot, // Scheduled time
-    home: home,
-    away: away,
-    hOdds: parseFloat((1.3 + Math.random()*3).toFixed(2)),
-    dOdds: parseFloat((2.8 + Math.random()*2).toFixed(2)),
-    aOdds: parseFloat((1.5 + Math.random()*4).toFixed(2)),
-    score: null,
-    ht: false,
-    ft: false,
-    startTime: null, // Will be set by cycle checker
-    willStartAt: null
-  };
-  
-  matchesData.push(newMatch);
-  renderMatches();
-  
-  console.log(`Spawned scheduled match: ${home} vs ${away} at ${newTimeSlot}`);
-}
-// Add after your matchesData array
-function generateMoreMatches() {
-  const footballTeams = [
-    // England
-    ['Man City', 'Liverpool', 'Arsenal', 'Chelsea', 'Man United', 'Tottenham', 'Newcastle', 'Brighton', 'Aston Villa', 'West Ham'],
-    // Spain
-    ['Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla', 'Valencia', 'Villarreal', 'Real Sociedad', 'Betis'],
-    // Italy
-    ['Juventus', 'AC Milan', 'Inter Milan', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina'],
-    // Germany
-    ['Bayern Munich', 'Dortmund', 'RB Leipzig', 'Bayer Leverkusen', 'Eintracht Frankfurt', 'Wolfsburg'],
-    // Nigeria
-    ['Enyimba', 'Kano Pillars', 'Rangers Int', 'Shooting Stars', 'Remo Stars', 'Plateau United', 'MFM FC', 'Lobi Stars']
-  ];
-  
-  const basketballTeams = [
-    ['Lakers', 'Warriors', 'Celtics', 'Heat', 'Nets', 'Bucks', 'Suns', 'Nuggets', '76ers', 'Knicks', 'Mavericks', 'Clippers']
-  ];
-  
-  let id = 100; // Start from 100 to avoid conflicts
-  
-  // Generate 20 more football matches
-  for(let i=0; i<20; i++) {
-    const league = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'NPFL'][Math.floor(Math.random()*5)];
-    const teams = footballTeams[['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'NPFL'].indexOf(league)];
-    const home = teams[Math.floor(Math.random()*teams.length)];
-    let away = teams[Math.floor(Math.random()*teams.length)];
-    while(away === home) away = teams[Math.floor(Math.random()*teams.length)];
-    
-    matchesData.push({
-      id: id++,
-      sport: 'football',
-      league: league,
-      live: Math.random() > 0.7, // 30% chance of being live
-      time: Math.random() > 0.7 ? Math.floor(Math.random()*90) + '\'' : 'Tomorrow ' + (16 + Math.floor(Math.random()*8)) + ':00',
-      home: home,
-      away: away,
-      hOdds: (1.2 + Math.random()*3).toFixed(2),
-      dOdds: (2.5 + Math.random()*2).toFixed(2),
-      aOdds: (1.5 + Math.random()*4).toFixed(2),
-      score: Math.random() > 0.7 ? Math.floor(Math.random()*3) + '-' + Math.floor(Math.random()*3) : null,
-      ht: false,
-      ft: false
-    });
-  }
-}
-
-// Call this in your DOMContentLoaded
-// generateMoreMatches();
-
+// RENDER FUNCTIONS
 function renderMatches() {
   const container = document.getElementById('matchList');
   const filtered = currentSport === 'all' ? matchesData : matchesData.filter(m => m.sport === currentSport);
- 
+  
   container.innerHTML = filtered.map(m => {
     const state = matchStates[m.id];
     const isLive = m.live && !m.ft;
     const isHT = m.ht;
     const isFT = m.ft;
-   
+    
     return `
     <div class="mc ${isLive ? 'lv' : ''} ${isHT ? 'ht' : ''} ${isFT ? 'ft' : ''}" data-id="${m.id}">
       <div class="mch">
@@ -1760,9 +1783,9 @@ function renderMatches() {
         <div class="sg">
           <div><div class="sv">${state ? Math.floor(Math.random()*60+40) : 50}%</div><div class="sl2">Possession</div></div>
           <div><div class="sv">${state ? state.events.filter(e=>e.type==='goal').length : 0}</div><div class="sl2">Goals</div></div>
-          <div><div class="sv">${Math.floor(Math.random()*10)}</div><div class="sl2">Shots</div></div>
+          <div><div class="sv">${Math.floor(Math.random()*15)}</div><div class="sl2">Shots</div></div>
         </div>
-        <div class="mt-status">${isHT ? 'HALF TIME - Players resting' : 'Match in progress...'}</div>
+        <div class="mt-status">${isHT ? '⏸️ HALF TIME - Players resting' : '⚡ Match in progress...'}</div>
       </div>` : ''}
     </div>
   `}).join('');
@@ -1796,16 +1819,16 @@ function isSelected(matchId, selection) {
   return betslip.some(b => b.matchId === matchId && b.selection === selection);
 }
 
-// BETSLIP
+// BETSLIP SYSTEM
 function addBet(matchId, selection, odds, team) {
   const match = matchesData.find(m => m.id === matchId);
   if(match.ft) {
     showToast('Error', 'Match has ended', 'error');
     return;
   }
- 
+  
   const existing = betslip.findIndex(b => b.matchId === matchId);
- 
+  
   if(existing >= 0) {
     if(betslip[existing].selection === selection) {
       betslip.splice(existing, 1);
@@ -1815,7 +1838,7 @@ function addBet(matchId, selection, odds, team) {
   } else {
     betslip.push({matchId, selection, odds, team, match: `${match.home} vs ${match.away}`});
   }
- 
+  
   renderMatches();
   updateBetslip();
 }
@@ -1824,15 +1847,15 @@ function updateBetslip() {
   const cont = document.getElementById('bsCont');
   const stakeDiv = document.getElementById('bsStake');
   const count = document.getElementById('bsCount');
- 
+  
   count.textContent = betslip.length;
- 
+  
   if(betslip.length === 0) {
     cont.innerHTML = '<div class="be"><i class="fas fa-ticket-alt"></i><p>Your betslip is empty</p><small>Click any odds to add</small></div>';
     stakeDiv.style.display = 'none';
     return;
   }
- 
+  
   cont.innerHTML = betslip.map((b, i) => `
     <div class="bb">
       <button class="brm" onclick="removeBet(${i})"><i class="fas fa-times"></i></button>
@@ -1841,7 +1864,7 @@ function updateBetslip() {
       <div class="bod">${b.selection}</div>
     </div>
   `).join('');
- 
+  
   stakeDiv.style.display = 'block';
   calcWin();
 }
@@ -1870,7 +1893,7 @@ function calcWin() {
     document.getElementById('placeBetBtn').disabled = true;
     return;
   }
- 
+  
   const totalOdds = betslip.reduce((acc, b) => acc * b.odds, 1);
   const win = stake * totalOdds;
   document.getElementById('pWin').textContent = '₦' + win.toLocaleString('en-NG', {minimumFractionDigits: 2});
@@ -1892,31 +1915,34 @@ function openPayModal() {
     setTimeout(() => openModal('depositModal'), 1000);
     return;
   }
- 
+  
   document.getElementById('payStake').textContent = '₦' + stake.toLocaleString();
   const totalOdds = betslip.reduce((acc, b) => acc * b.odds, 1);
   document.getElementById('payWin').textContent = '₦' + (stake * totalOdds).toLocaleString('en-NG', {minimumFractionDigits: 2});
- 
-  // Reset bank form
+  
   document.getElementById('bankSelect').value = '';
   document.getElementById('betAcctNum').value = '';
   document.getElementById('betAcctName').value = '';
- 
+  
   openModal('payModal');
 }
 
-// Auto-fill account name when account number is entered
-document.getElementById('betAcctNum')?.addEventListener('input', function(e) {
-  const val = e.target.value;
-  if(val.length === 10) {
-    // Simulate bank verification
-    document.getElementById('betAcctName').value = 'Verifying...';
-    setTimeout(() => {
-      const names = ['John Doe', 'Jane Smith', 'Michael Johnson', 'Sarah Williams', 'David Brown'];
-      document.getElementById('betAcctName').value = names[Math.floor(Math.random()*names.length)];
-    }, 800);
-  } else {
-    document.getElementById('betAcctName').value = '';
+// Auto-fill account name
+document.addEventListener('DOMContentLoaded', () => {
+  const acctInput = document.getElementById('betAcctNum');
+  if(acctInput) {
+    acctInput.addEventListener('input', function(e) {
+      const val = e.target.value;
+      if(val.length === 10) {
+        document.getElementById('betAcctName').value = 'Verifying...';
+        setTimeout(() => {
+          const names = ['John Doe', 'Jane Smith', 'Michael Johnson', 'Sarah Williams', 'David Brown', 'Chioma Adeleke', 'Emeka Okafor', 'Amina Ibrahim'];
+          document.getElementById('betAcctName').value = names[Math.floor(Math.random()*names.length)];
+        }, 800);
+      } else {
+        document.getElementById('betAcctName').value = '';
+      }
+    });
   }
 });
 
@@ -1924,7 +1950,7 @@ function confirmBet() {
   const bank = document.getElementById('bankSelect').value;
   const acctNum = document.getElementById('betAcctNum').value;
   const acctName = document.getElementById('betAcctName').value;
- 
+  
   if(!bank) {
     showToast('Error', 'Please select your bank', 'error');
     return;
@@ -1937,21 +1963,18 @@ function confirmBet() {
     showToast('Error', 'Wait for account verification', 'error');
     return;
   }
- 
+  
   const stake = parseFloat(document.getElementById('stakeIn').value);
   const totalOdds = betslip.reduce((acc, b) => acc * b.odds, 1);
   const potentialWin = stake * totalOdds;
- 
-  // Deduct balance
+  
   balance -= stake;
   localStorage.setItem('tb_balance', balance);
- 
-  // Add VIP points
+  
   vipPoints += Math.floor(stake / 10);
   localStorage.setItem('tb_vip', vipPoints);
   updateVIP();
- 
-  // Create bet record
+  
   const bet = {
     id: 'TB' + Date.now(),
     date: new Date().toLocaleString(),
@@ -1964,14 +1987,12 @@ function confirmBet() {
     bank: bankNames[bank],
     acctNum: acctNum
   };
- 
+  
   bets.unshift(bet);
   localStorage.setItem('tb_bets', JSON.stringify(bets));
- 
-  // Show receipt
+  
   showReceipt(bet);
- 
-  // Reset
+  
   closeModal('payModal');
   clearBets();
   updateUI();
@@ -1985,7 +2006,7 @@ function showReceipt(bet) {
   document.getElementById('rOdds').textContent = bet.odds.toFixed(2);
   document.getElementById('rStake').textContent = '₦' + bet.stake.toLocaleString();
   document.getElementById('rWin').textContent = '₦' + bet.potentialWin.toLocaleString('en-NG', {minimumFractionDigits: 2});
- 
+  
   const selsDiv = document.getElementById('rSels');
   selsDiv.innerHTML = bet.selections.map(s => `
     <div class="rbt">
@@ -1994,8 +2015,7 @@ function showReceipt(bet) {
       <div class="rbo">Selection: ${s.selection}</div>
     </div>
   `).join('');
- 
-  // Generate barcode
+  
   const bc = document.getElementById('rBC');
   bc.innerHTML = '';
   for(let i=0; i<40; i++) {
@@ -2009,7 +2029,7 @@ function showReceipt(bet) {
     bc.appendChild(rect);
   }
   document.getElementById('rBN').textContent = bet.id.replace('TB', 'TB-') + '-NG';
- 
+  
   document.getElementById('ro').classList.add('open');
 }
 
@@ -2024,11 +2044,11 @@ function renderMyBets() {
     container.innerHTML = '<p style="font-size:.78rem;color:var(--t3);padding:1rem 0;text-align:center;">No bets yet. Place a bet to see it here!</p>';
     return;
   }
- 
+  
   container.innerHTML = bets.slice(0, 10).map(b => {
     const statusColor = b.status === 'won' ? 'var(--green)' : b.status === 'lost' ? 'var(--red)' : 'var(--t3)';
     const statusBg = b.status === 'won' ? 'rgba(34,197,94,.1)' : b.status === 'lost' ? 'rgba(239,68,68,.1)' : 'transparent';
-   
+    
     return `
     <div class="fi" style="margin-bottom:.5rem;padding:.6rem;background:${statusBg};border-left:3px solid ${statusColor}">
       <div>
@@ -2045,7 +2065,6 @@ function renderMyBets() {
   `}).join('');
 }
 
-// FAVORITES
 function toggleFav(matchId) {
   const idx = favorites.indexOf(matchId);
   if(idx >= 0) favorites.splice(idx, 1);
@@ -2068,13 +2087,12 @@ function renderFavorites() {
   }).join('');
 }
 
-// VIP SYSTEM
 function updateVIP() {
   let level = 1, max = 1000, title = 'Bronze';
   if(vipPoints >= 20000) {level = 4; max = 50000; title = 'Platinum';}
   else if(vipPoints >= 5000) {level = 3; max = 20000; title = 'Gold';}
   else if(vipPoints >= 1000) {level = 2; max = 5000; title = 'Silver';}
- 
+  
   document.getElementById('vipLv').textContent = level;
   document.getElementById('vipCur').textContent = vipPoints;
   document.getElementById('vipMax').textContent = max;
@@ -2087,7 +2105,7 @@ function initAviator() {}
 function toggleAviator() {
   const sec = document.getElementById('aviatorSection');
   const main = document.getElementById('mainContent');
- 
+  
   if(sec.classList.contains('open')) {
     sec.classList.remove('open');
     main.style.display = 'block';
@@ -2107,55 +2125,29 @@ function startAviator() {
   document.getElementById('avPlane').classList.add('flying');
   document.getElementById('avPlane').classList.remove('crashed');
   document.getElementById('avStatus').textContent = 'Flying...';
- 
+  
   const crashPoint = generateCrashPoint();
- 
+  
   aviatorInterval = setInterval(() => {
     if(aviatorCrashed) return;
-   
+    
     aviatorMultiplier += 0.01;
     const display = aviatorMultiplier.toFixed(2) + 'x';
     document.getElementById('avMult').textContent = display;
-   
+    
     updateCurve();
     checkAutoCashout();
-   
+    
     if(aviatorMultiplier >= crashPoint) {
       crash();
     }
   }, 50);
 }
 
-// Provably fair style crash point generation
 function generateCrashPoint() {
-  // House edge: 3% (97% RTP)
-  // Uses exponential distribution for realistic crash games
-  const houseEdge = 0.03;
   const r = Math.random();
-  
-  // Formula: 0.99 / (1 - r) with max cap at 1000x
-  // 97% RTP means 1% chance of 1x crash, most crash at 1-2x
-  const crashPoint = Math.min(1000, Math.max(1.01, 0.99 / (1 - r)));
-  
-  // Add some randomness to make it feel more natural
-  // Occasionally force early crashes (1.00-1.10x) - about 6% chance
-  if(Math.random() < 0.06) {
-    return parseFloat((1 + Math.random() * 0.1).toFixed(2));
-  }
-  
-  return parseFloat(crashPoint.toFixed(2));
+  return Math.max(1.01, 0.99 / (1 - r));
 }
-
-// Add provably fair hash display
-function generateRoundHash() {
-  const hash = '0x' + Array.from({length: 64}, () => 
-    Math.floor(Math.random()*16).toString(16)
-  ).join('');
-  document.getElementById('hashVal').textContent = hash.substring(0, 16) + '...';
-  return hash;
-}
-
-// Call generateRoundHash() at start of each round in startAviator()
 
 function updateCurve() {
   const path = document.getElementById('avPath');
@@ -2163,7 +2155,7 @@ function updateCurve() {
   const height = 400;
   const x = (aviatorMultiplier - 1) * 50;
   const y = height - (Math.pow(aviatorMultiplier, 1.5) * 30);
- 
+  
   if(x < width) {
     const d = `M0,${height} Q${x/2},${height} ${x},${Math.max(0, y)}`;
     path.setAttribute('d', d);
@@ -2186,22 +2178,22 @@ function crash() {
   aviatorCrashed = true;
   clearInterval(aviatorInterval);
   aviatorInterval = null;
- 
+  
   document.getElementById('avMult').classList.add('crashed');
   document.getElementById('avPlane').classList.remove('flying');
   document.getElementById('avPlane').classList.add('crashed');
   document.getElementById('avStatus').textContent = 'Crashed at ' + aviatorMultiplier.toFixed(2) + 'x';
- 
+  
   [1, 2].forEach(betNum => {
     if(aviatorBets[betNum] && !aviatorBets[betNum].cashed) {
       loseBet(betNum);
     }
   });
- 
+  
   aviatorHistory.unshift(aviatorMultiplier.toFixed(2));
   if(aviatorHistory.length > 10) aviatorHistory.pop();
   updateHistory();
- 
+  
   setTimeout(() => {
     if(document.getElementById('aviatorSection').classList.contains('open')) {
       resetAviator();
@@ -2216,7 +2208,7 @@ function resetAviator() {
   document.getElementById('avPlane').style.top = '70%';
   document.getElementById('avMult').textContent = '1.00x';
   document.getElementById('avStatus').textContent = 'Waiting for next round...';
- 
+  
   [1, 2].forEach(betNum => {
     if(aviatorBets[betNum] && aviatorBets[betNum].cashed) {
       resetBet(betNum);
@@ -2230,10 +2222,10 @@ function placeAviatorBet(betNum) {
     return;
   }
   if(aviatorBets[betNum]) return;
- 
+  
   const input = document.getElementById(`bet${betNum}Input`);
   const amount = parseFloat(input.value);
- 
+  
   if(!amount || amount < 100) {
     showToast('Error', 'Minimum bet is ₦100', 'error');
     return;
@@ -2242,37 +2234,37 @@ function placeAviatorBet(betNum) {
     showToast('Error', 'Insufficient balance', 'error');
     return;
   }
- 
+  
   balance -= amount;
   localStorage.setItem('tb_balance', balance);
   updateUI();
- 
+  
   aviatorBets[betNum] = {amount, cashed: false, cashout: 0};
   document.getElementById(`bet${betNum}Amt`).textContent = '₦' + amount.toLocaleString();
   document.getElementById(`bet${betNum}Btn`).style.display = 'none';
   document.getElementById(`cash${betNum}Btn`).classList.add('show');
- 
+  
   showToast('Bet Placed', `Bet ${betNum}: ₦${amount.toLocaleString()}`);
 }
 
 function cashOutAviator(betNum) {
   if(!aviatorBets[betNum] || aviatorBets[betNum].cashed || aviatorCrashed) return;
- 
+  
   const win = aviatorBets[betNum].amount * aviatorMultiplier;
   aviatorBets[betNum].cashed = true;
   aviatorBets[betNum].cashout = win;
- 
+  
   balance += win;
   localStorage.setItem('tb_balance', balance);
   updateUI();
- 
+  
   const btn = document.getElementById(`cash${betNum}Btn`);
   btn.classList.remove('show');
   btn.classList.add('av-btn-cashed');
   btn.textContent = `Cashed: ₦${win.toFixed(2)}`;
- 
+  
   showToast('Cash Out!', `Won ₦${win.toFixed(2)} at ${aviatorMultiplier.toFixed(2)}x`);
- 
+  
   const hist = document.getElementById('avHistory');
   const item = document.createElement('div');
   item.className = 'av-h-item av-h-win';
@@ -2285,24 +2277,29 @@ function loseBet(betNum) {
   btn.classList.remove('show');
   btn.classList.add('av-btn-lost');
   btn.textContent = 'Lost';
- 
+  
   const hist = document.getElementById('avHistory');
   const item = document.createElement('div');
   item.className = 'av-h-item av-h-loss';
-  item.textContent = `-₦${aviatorBets[betNum].amount.toFixed(0)}`;
+  item.textContent = `Lost @ ${aviatorMultiplier.toFixed(2)}x`;
   hist.prepend(item);
 }
 
 function resetBet(betNum) {
   aviatorBets[betNum] = null;
-  document.getElementById(`bet${betNum}Amt`).textContent = '₦0.00';
-  const btn = document.getElementById(`bet${betNum}Btn`);
-  btn.style.display = 'block';
-  btn.className = 'av-btn av-btn-bet';
-  btn.textContent = 'Place Bet';
-  const cashBtn = document.getElementById(`cash${betNum}Btn`);
-  cashBtn.classList.remove('show', 'av-btn-cashed', 'av-btn-lost');
-  cashBtn.textContent = `Cash Out <span id="cash${betNum}Val">0.00</span>`;
+  document.getElementById(`bet${betNum}Amt`).textContent = '₦0';
+  document.getElementById(`bet${betNum}Btn`).style.display = 'block';
+  document.getElementById(`cash${betNum}Btn`).classList.remove('show', 'av-btn-cashed', 'av-btn-lost');
+  document.getElementById(`cash${betNum}Btn`).textContent = 'Cash Out';
+  document.getElementById(`bet${betNum}Input`).value = '';
+}
+
+function updateHistory() {
+  const histContainer = document.getElementById('avHistory');
+  if (!histContainer) return;
+  histContainer.innerHTML = aviatorHistory.map(h => `
+    <div class="av-h-item ${parseFloat(h) >= 2.0 ? 'av-h-win' : 'av-h-loss'}">${h}x</div>
+  `).join('');
 }
 
 function stopAviator() {
@@ -2310,442 +2307,202 @@ function stopAviator() {
     clearInterval(aviatorInterval);
     aviatorInterval = null;
   }
+  aviatorCrashed = true;
+  const plane = document.getElementById('avPlane');
+  if (plane) {
+    plane.classList.remove('flying');
+  }
+  const status = document.getElementById('avStatus');
+  if (status) {
+    status.textContent = 'Stopped';
+  }
 }
 
-function updateHistory() {
-  const hist = document.getElementById('avHistory');
-  hist.innerHTML = aviatorHistory.map(h => {
-    const val = parseFloat(h);
-    const cls = val < 2 ? 'av-h-loss' : val < 10 ? '' : 'av-h-win';
-    return `<div class="av-h-item ${cls}">${h}x</div>`;
-  }).join('');
+// UTILITY FUNCTIONS
+function formatMoney(amount) {
+  return '₦' + amount.toLocaleString('en-NG', {minimumFractionDigits: 2});
 }
-let minesGame = {
-  grid: [],
-  revealed: [],
-  mines: [],
-  bet: 0,
-  multiplier: 1,
-  active: false
-};
 
-function initMines() {
-  // Add Mines section to HTML with 5x5 grid
-  const minesHTML = `
-    <section class="aviator-section" id="minesSection">
-      <div class="av-container">
-        <div class="av-header">
-          <div class="av-title"><i class="fas fa-bomb"></i> Mines</div>
-          <button class="btn bo" onclick="toggleMines()">Close</button>
-        </div>
-        <div style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem">
-          <div class="av-bet-panel">
-            <div class="av-bet-header"><span class="av-bet-label">BET</span></div>
-            <input type="number" class="av-input" id="minesBet" value="1000" min="100">
-            <div class="av-auto" style="margin-bottom:.5rem">
-              <label>Mines: <select id="minesCount" style="background:var(--bg3);border:1px solid var(--bd);color:var(--t);padding:.3rem;border-radius:4px">
-                <option value="3">3 Mines</option>
-                <option value="5" selected>5 Mines</option>
-                <option value="10">10 Mines</option>
-                <option value="15">15 Mines</option>
-                <option value="20">20 Mines</option>
-              </select></label>
-            </div>
-            <button class="av-btn av-btn-bet" id="minesStartBtn" onclick="startMines()">Start Game</button>
-            <button class="av-btn av-btn-cashout" id="minesCashBtn" onclick="cashOutMines()" style="display:none">Cash Out <span id="minesWin">0</span></button>
-            <div style="margin-top:1rem;font-size:.8rem;color:var(--t2)">
-              Multiplier: <span id="minesMult" style="color:var(--g);font-weight:700">1.00x</span>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem" id="minesGrid"></div>
-        </div>
-      </div>
-    </section>
+function showToast(title, message, type = 'success') {
+  // Remove existing toasts to prevent stacking
+  const existing = document.querySelector('.toast-notification');
+  if (existing) existing.remove();
+  
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${type === 'error' ? 'var(--red)' : type === 'warning' ? 'var(--yellow)' : 'var(--green)'};
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   `;
-  document.body.insertAdjacentHTML('beforeend', minesHTML);
+  toast.innerHTML = `<strong>${title}</strong><br>${message}`;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
-function toggleMines() {
-  const sec = document.getElementById('minesSection');
-  const main = document.getElementById('mainContent');
-  if(!sec) initMines();
-  
-  if(sec.classList.contains('open')) {
-    sec.classList.remove('open');
-    main.style.display = 'block';
-  } else {
-    sec.classList.add('open');
-    main.style.display = 'none';
-    renderMinesGrid();
+// MODAL FUNCTIONS
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if(modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 }
 
-function renderMinesGrid() {
-  const grid = document.getElementById('minesGrid');
-  grid.innerHTML = Array.from({length: 25}, (_, i) => `
-    <div class="op" style="aspect-ratio:1;display:grid;place-items:center;font-size:1.5rem;cursor:pointer" 
-         id="mine-${i}" onclick="revealMine(${i})">?</div>
-  `).join('');
-}
-
-function startMines() {
-  if(!user) return openModal('loginModal');
-  const bet = parseFloat(document.getElementById('minesBet').value);
-  const mineCount = parseInt(document.getElementById('minesCount').value);
-  
-  if(bet < 100 || bet > balance) {
-    showToast('Error', 'Invalid bet amount', 'error');
-    return;
-  }
-  
-  balance -= bet;
-  updateUI();
-  
-  minesGame = {
-    grid: Array(25).fill(0),
-    revealed: [],
-    mines: [],
-    bet: bet,
-    multiplier: 1,
-    active: true
-  };
-  
-  // Place mines randomly
-  while(minesGame.mines.length < mineCount) {
-    const pos = Math.floor(Math.random() * 25);
-    if(!minesGame.mines.includes(pos)) minesGame.mines.push(pos);
-  }
-  
-  document.getElementById('minesStartBtn').style.display = 'none';
-  document.getElementById('minesCashBtn').style.display = 'block';
-  document.getElementById('minesCashBtn').classList.remove('av-btn-cashed');
-  renderMinesGrid();
-  updateMinesMultiplier();
-}
-
-function revealMine(pos) {
-  if(!minesGame.active || minesGame.revealed.includes(pos)) return;
-  
-  if(minesGame.mines.includes(pos)) {
-    // Hit mine - game over
-    document.getElementById(`mine-${pos}`).innerHTML = '💣';
-    document.getElementById(`mine-${pos}`).style.background = 'var(--red)';
-    minesGame.active = false;
-    showToast('Boom!', 'You hit a mine!', 'error');
-    document.getElementById('minesStartBtn').style.display = 'block';
-    document.getElementById('minesCashBtn').style.display = 'none';
-    
-    // Reveal all mines
-    minesGame.mines.forEach(m => {
-      document.getElementById(`mine-${m}`).innerHTML = '💣';
-      document.getElementById(`mine-${m}`).style.background = 'var(--red)';
-    });
-  } else {
-    // Safe - reveal diamond
-    minesGame.revealed.push(pos);
-    document.getElementById(`mine-${pos}`).innerHTML = '💎';
-    document.getElementById(`mine-${pos}`).style.background = 'var(--green)';
-    updateMinesMultiplier();
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if(modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('open');
+    document.body.style.overflow = 'auto';
   }
 }
 
-function updateMinesMultiplier() {
-  const mineCount = parseInt(document.getElementById('minesCount').value);
-  const safeSpots = 25 - mineCount;
-  const revealed = minesGame.revealed.length;
-  
-  // Multiplier calculation based on minesweeper probability
-  const mult = (25 / (25 - mineCount)) ** revealed;
-  minesGame.multiplier = parseFloat(mult.toFixed(2));
-  
-  document.getElementById('minesMult').textContent = minesGame.multiplier.toFixed(2) + 'x';
-  document.getElementById('minesWin').textContent = '₦' + Math.floor(minesGame.bet * minesGame.multiplier).toLocaleString();
-}
-
-function cashOutMines() {
-  if(!minesGame.active) return;
-  
-  const win = minesGame.bet * minesGame.multiplier;
-  balance += win;
-  updateUI();
-  
-  minesGame.active = false;
-  showToast('Cash Out!', `Won ₦${win.toLocaleString()}`, 'success');
-  
-  document.getElementById('minesStartBtn').style.display = 'block';
-  document.getElementById('minesCashBtn').style.display = 'none';
-}
-function initPlinko() {
-  const plinkoHTML = `
-    <section class="aviator-section" id="plinkoSection">
-      <div class="av-container">
-        <div class="av-header">
-          <div class="av-title"><i class="fas fa-circle-dot"></i> Plinko</div>
-          <button class="btn bo" onclick="togglePlinko()">Close</button>
-        </div>
-        <div style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem">
-          <div class="av-bet-panel">
-            <div class="av-bet-header"><span class="av-bet-label">BET</span></div>
-            <input type="number" class="av-input" id="plinkoBet" value="1000" min="100">
-            <div class="av-auto" style="margin:.5rem 0">
-              <label>Risk: <select id="plinkoRisk" style="background:var(--bg3);border:1px solid var(--bd);color:var(--t);padding:.3rem;border-radius:4px">
-                <option value="low">Low</option>
-                <option value="medium" selected>Medium</option>
-                <option value="high">High</option>
-              </select></label>
-            </div>
-            <div class="av-auto">
-              <label>Rows: <select id="plinkoRows" style="background:var(--bg3);border:1px solid var(--bd);color:var(--t);padding:.3rem;border-radius:4px">
-                <option value="8">8</option>
-                <option value="12" selected>12</option>
-                <option value="16">16</option>
-              </select></label>
-            </div>
-            <button class="av-btn av-btn-bet" onclick="dropPlinko()" style="margin-top:.5rem">Drop Ball</button>
-          </div>
-          <div id="plinkoBoard" style="position:relative;height:400px;background:var(--bg2);border-radius:12px;overflow:hidden"></div>
-        </div>
-      </div>
-    </section>
-  `;
-  document.body.insertAdjacentHTML('beforeend', plinkoHTML);
-}
-
-function togglePlinko() {
-  const sec = document.getElementById('plinkoSection');
-  const main = document.getElementById('mainContent');
-  if(!sec) initPlinko();
-  
-  if(sec.classList.contains('open')) {
-    sec.classList.remove('open');
-    main.style.display = 'block';
-  } else {
-    sec.classList.add('open');
-    main.style.display = 'none';
-    renderPlinkoBoard();
-  }
-}
-
-function renderPlinkoBoard() {
-  const board = document.getElementById('plinkoBoard');
-  const rows = 12;
-  const cols = rows + 1;
-  
-  // Draw pegs
-  let html = '';
-  for(let r = 0; r < rows; r++) {
-    for(let c = 0; c <= r; c++) {
-      const x = 50 + (c - r/2) * 25;
-      const y = 30 + r * 28;
-      html += `<div style="position:absolute;left:${x}%;top:${y}px;width:8px;height:8px;background:var(--g);border-radius:50%;transform:translateX(-50%)"></div>`;
-    }
-  }
-  
-  // Draw buckets at bottom
-  const multipliers = [16, 9, 2, 1.4, 1.4, 1.2, 1.2, 1.4, 1.4, 2, 9, 16];
-  for(let i = 0; i < cols; i++) {
-    const x = (i / (cols-1)) * 90 + 5;
-    html += `
-      <div style="position:absolute;left:${x}%;bottom:10px;transform:translateX(-50%);text-align:center">
-        <div style="background:var(--g);color:#0B0C14;padding:.2rem .4rem;border-radius:4px;font-size:.7rem;font-weight:700">${multipliers[i]}x</div>
-      </div>
-    `;
-  }
-  
-  board.innerHTML = html;
-}
-
-function dropPlinko() {
-  if(!user) return openModal('loginModal');
-  const bet = parseFloat(document.getElementById('plinkoBet').value);
-  
-  if(bet < 100 || bet > balance) {
-    showToast('Error', 'Invalid bet', 'error');
-    return;
-  }
-  
-  balance -= bet;
-  updateUI();
-  
-  const board = document.getElementById('plinkoBoard');
-  const rows = parseInt(document.getElementById('plinkoRows').value);
-  const risk = document.getElementById('plinkoRisk').value;
-  
-  // Create ball
-  const ball = document.createElement('div');
-  ball.style.cssText = 'position:absolute;left:50%;top:20px;width:12px;height:12px;background:#fff;border-radius:50%;z-index:10;transition:all 0.1s linear';
-  board.appendChild(ball);
-  
-  // Simulate path
-  let pos = 0; // -rows/2 to rows/2
-  let top = 20;
-  
-  const interval = setInterval(() => {
-    top += 28;
-    pos += Math.random() > 0.5 ? 0.5 : -0.5;
-    pos = Math.max(-rows/2, Math.min(rows/2, pos));
-    
-    ball.style.top = top + 'px';
-    ball.style.left = (50 + pos * 25) + '%';
-    
-    if(top > 30 + (rows-1) * 28) {
-      clearInterval(interval);
-      
-      // Calculate multiplier based on final position
-      const slot = Math.floor((pos + rows/2));
-      const mults = risk === 'low' ? [2,1.5,1.2,1.1,1,1,1.1,1.2,1.5,2] : 
-                    risk === 'high' ? [50,20,5,2,1,1,2,5,20,50] :
-                    [10,5,2,1.5,1.2,1.2,1.5,2,5,10];
-      const mult = mults[Math.min(slot, mults.length-1)] || 1;
-      
-      const win = bet * mult;
-      balance += win;
-      updateUI();
-      
-      showToast(mult > 1 ? 'Win!' : 'Loss', `${mult}x multiplier`, mult > 1 ? 'success' : 'error');
-      setTimeout(() => ball.remove(), 1000);
-    }
-  }, 100);
-}
-
-// VIRTUAL SPORTS
-function toggleVirtual() {
-  const sec = document.getElementById('vsec');
-  sec.classList.toggle('open');
-  if(sec.classList.contains('open')) renderVirtual();
-}
-
-function renderVirtual() {
-  const container = document.getElementById('vmatches');
-  const virtualMatches = [
-    {t: 'V-Football', h: 'Virtual United', a: 'Virtual City', time: '2 min'},
-    {t: 'V-Horse Racing', h: 'Thunder Bolt', a: '5 others', time: '5 min'},
-    {t: 'V-Dogs', h: 'Rapid Runner', a: '7 others', time: '8 min'}
-  ];
- 
-  container.innerHTML = virtualMatches.map((m, i) => `
-    <div class="vm">
-      <span class="vt">LIVE</span>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <span style="font-size:.75rem;color:var(--g);font-weight:600">${m.t}</span>
-        <span style="font-size:.7rem;color:var(--t3)">Next: ${m.time}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="tm"><div class="tb" style="width:30px;height:30px;font-size:.6rem">${m.h[0]}</div><span class="tn" style="font-size:.8rem">${m.h}</span></div>
-        <div class="vs">VS</div>
-        <div class="tm aw"><div class="tb" style="width:30px;height:30px;font-size:.6rem">${m.a[0]}</div><span class="tn" style="font-size:.8rem">${m.a}</span></div>
-      </div>
-      <div class="or" style="margin-top:.5rem">
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">W1</div><div class="ov">2.10</div></div>
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">X</div><div class="ov">3.40</div></div>
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">W2</div><div class="ov">2.85</div></div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// UTILITIES
 function toggleStats(matchId) {
-  const el = document.getElementById(`stats-${matchId}`);
-  el.classList.toggle('open');
+  const stats = document.getElementById(`stats-${matchId}`);
+  if(stats) {
+    stats.style.display = stats.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
+// JACKPOT SYSTEM
 function startJackpot() {
+  const jackpotEl = document.getElementById('jackpot');
+  if(!jackpotEl) return;
+  
+  let jackpot = parseInt(localStorage.getItem('tb_jackpot')) || 5000000;
+  jackpotEl.textContent = '₦' + jackpot.toLocaleString();
+  
   setInterval(() => {
-    const el = document.getElementById('jackAmt');
-    let val = parseInt(el.textContent.replace(/[^0-9]/g, ''));
-    val += Math.floor(Math.random() * 1000);
-    el.textContent = '₦' + val.toLocaleString();
+    jackpot += Math.floor(Math.random() * 1000);
+    localStorage.setItem('tb_jackpot', jackpot);
+    jackpotEl.textContent = '₦' + jackpot.toLocaleString();
   }, 5000);
 }
 
-function copyRef() {
-  const code = document.getElementById('refCode').textContent;
-  navigator.clipboard.writeText(code);
-  showToast('Copied!', 'Referral code copied to clipboard');
-}
-
-function shareBet() {
-  const text = `Check out my bet on Treasure Bet! Potential win: ${document.getElementById('pWin').textContent}`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-}
-
-function toggleChat() {
-  document.getElementById('cbx').classList.toggle('open');
-}
-
-function sendChat() {
-  const input = document.getElementById('ci');
-  const msg = input.value.trim();
-  if(!msg) return;
- 
-  const cms = document.getElementById('cms');
-  cms.innerHTML += `<div class="cm usr">${msg}</div>`;
-  input.value = '';
-  cms.scrollTop = cms.scrollHeight;
- 
-  setTimeout(() => {
-    cms.innerHTML += `<div class="cm sup">Thanks for your message! Our team will respond shortly.</div>`;
-    cms.scrollTop = cms.scrollHeight;
-  }, 1000);
-}
-
-function toggleAudio() {
-  audioEnabled = !audioEnabled;
-  document.getElementById('abt').innerHTML = audioEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-}
-
-function showSection(sec) {
-  if(sec === 'main') {
-    document.getElementById('aviatorSection').classList.remove('open');
-    document.getElementById('mainContent').style.display = 'block';
-    stopAviator();
+// Close modal when clicking outside
+window.onclick = function(event) {
+  if(event.target.classList.contains('modal')) {
+    event.target.style.display = 'none';
+    event.target.classList.remove('open');
+    document.body.style.overflow = 'auto';
   }
 }
 
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-function showToast(title, text, type='success') {
-  const toast = document.getElementById('toast');
-  document.getElementById('tth').textContent = title;
-  document.getElementById('ttp').textContent = text;
- 
-  const icon = toast.querySelector('.ti');
-  icon.innerHTML = type === 'error' ? '<i class="fas fa-exclamation"></i>' : '<i class="fas fa-check"></i>';
-  icon.style.background = type === 'error' ? 'rgba(239,68,68,.15)' : 'rgba(34,197,94,.15)';
-  icon.style.color = type === 'error' ? 'var(--red)' : 'var(--green)';
- 
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function formatMoney(amount) {
-  return amount.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-}
-
-// Close modals on outside click
-window.onclick = function(e) {
-  if(e.target.classList.contains('modal')) {
-    e.target.classList.remove('open');
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') {
+    document.querySelectorAll('.modal').forEach(m => {
+      m.style.display = 'none';
+      m.classList.remove('open');
+    });
+    document.body.style.overflow = 'auto';
   }
-  if(e.target.id === 'ro') {
-    closeReceipt();
+});
+
+// Add CSS animations
+const animStyle = document.createElement('style');
+animStyle.textContent = `
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+  }
+  @keyframes sp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  @keyframes fall {
+    to { transform: translateY(100vh) rotate(360deg); }
+  }
+  .toast-notification {
+    font-family: inherit;
+  }
+`;
+document.head.appendChild(animStyle);
+
+// CRITICAL FIX: Update the startScheduledMatchesCycle function to use 5 minutes instead of 2 minutes
+// This replaces the existing function - paste this at the end to override
+function startScheduledMatchesCycle() {
+  // Check every 10 seconds
+  setInterval(() => {
+    const now = Date.now();
+    
+    matchesData.forEach(match => {
+      // Only process scheduled matches (not live, not finished, string time)
+      if (!match.live && !match.ft && !match.ht && typeof match.time === 'string' && !match.time.includes('\'')) {
+        
+        // Initialize start time if not set
+        if (!match.startTime) {
+          match.startTime = now;
+          match.willStartAt = now + 300000; // 5 minutes = 300000ms (CHANGED FROM 120000)
+          match.converting = false;
+          console.log(`[SCHEDULED] ${match.home} vs ${match.away} will start at ${new Date(match.willStartAt).toLocaleTimeString()}`);
+        }
+        
+        // Check if it's time to start
+        if (now >= match.willStartAt && !match.converting) {
+          match.converting = true;
+          console.log(`[STARTING] ${match.home} vs ${match.away} is going LIVE!`);
+          convertToLive(match);
+        }
+      }
+    });
+  }, 10000);
+}
+
+// ENSURE matchesData persists across sessions
+function saveMatchesData() {
+  localStorage.setItem('tb_matchesData', JSON.stringify(matchesData));
+  localStorage.setItem('tb_matchStates', JSON.stringify(matchStates));
+}
+
+function loadMatchesData() {
+  const saved = localStorage.getItem('tb_matchesData');
+  const savedStates = localStorage.getItem('tb_matchStates');
+  
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    // Merge with default data, keeping existing matches
+    if (parsed && parsed.length > 0) {
+      matchesData.length = 0;
+      matchesData.push(...parsed);
+    }
+  }
+  
+  if (savedStates) {
+    const states = JSON.parse(savedStates);
+    Object.assign(matchStates, states);
   }
 }
 
-// Start match simulations on load
-setTimeout(() => {
-  matchesData.forEach(m => {
-    if(m.live) startMatchSimulation(m.id);
-  });
-}, 1000);
+// Save data periodically to persist across refreshes
+setInterval(saveMatchesData, 30000); // Save every 30 seconds
+
+// Load data on startup
+document.addEventListener('DOMContentLoaded', () => {
+  loadMatchesData();
+});
+
+// Prevent multiple intervals on page refresh
+window.addEventListener('beforeunload', () => {
+  Object.values(matchIntervals).forEach(interval => clearInterval(interval));
+});
 </script>
-
-</body>
-</html>
