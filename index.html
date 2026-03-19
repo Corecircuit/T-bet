@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Treasure Bet - Nigeria's Premier Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--g:#F5C518;--gd:#C49A0A;--gp:#FDE87A;--gg:rgba(245,197,24,.15);--gr:rgba(245,197,24,.25);--green:#22C55E;--red:#EF4444;--blue:#3B82F6;--purple:#8B5CF6;--bg:#0B0C14;--bg2:#11121E;--bg3:#181926;--cd:#1A1B2A;--cd2:#21223A;--bd:rgba(255,255,255,.07);--bg-g:rgba(245,197,24,.25);--t:#EEF0FF;--t2:#8A8DB5;--t3:#555880;--r:14px;--rs:8px;--hh:64px;--fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
+:root{--g:#F5C518;--gd:#C49A0A;--gp:#FDE87A;--gg:rgba(245,197,24,.15);--gr:rgba(245,197,24,.25);--green:#22C55E;--red:#EF4444;--blue:#3B82F6;--purple:#8B5CF6;--bg:#0B0C14;--bg2:#11121E;--bg3:#181926;--cd:#1A1B2A;--cd2:#21223A;--bd:rgba(255,255,255,.07);--bg-g:rgba(245,197,24,.25);--t:#EEF0FF;--t2:#8A8DB5;--t3:#555880;--r:14px;--rs:8px;--hh:64px;--fh:'Outfit',sans-serif;--fb:'Space Grotesk',sans-serif}
 [data-theme=light]{--bg:#F5F0E8;--bg2:#EDE7DA;--bg3:#E3DDD0;--cd:#FFF;--cd2:#F8F4EC;--bd:rgba(0,0,0,.09);--bg-g:rgba(180,140,10,.28);--t:#1A1828;--t2:#5A5675;--t3:#9590B0}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{overscroll-behavior:none}body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:clip;overscroll-behavior:none;min-height:100vh;transition:background .35s,color .35s}
@@ -78,10 +78,11 @@ header{height:var(--hh);background:rgba(11,12,20,.93);backdrop-filter:blur(20px)
 .wrap{max-width:1440px;margin:0 auto;padding:0 clamp(1rem,3vw,2rem) 4rem;display:grid;grid-template-columns:210px 1fr 310px;gap:clamp(.85rem,2vw,1.4rem);align-items:start}
 
 /* SIDEBAR */
-.sb{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem;position:sticky;top:calc(var(--hh) + 1rem)}
+.sb{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem;position:sticky;top:calc(var(--hh) + 1rem);max-height:calc(100vh - var(--hh) - 2rem);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--gr) transparent}
+.sb::-webkit-scrollbar{width:4px}.sb::-webkit-scrollbar-track{background:transparent}.sb::-webkit-scrollbar-thumb{background:var(--gr);border-radius:10px}
 .stt{font-family:var(--fh);font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--t3);margin-bottom:.65rem;display:flex;align-items:center;gap:.35rem}
-.sp{width:100%;background:none;border:none;display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:var(--rs);color:var(--t2);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;text-align:left;font-family:var(--fb)}
-.sp i{width:15px;text-align:center;font-size:.78rem}
+.sp{width:100%;background:none;border:none;display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:var(--rs);color:var(--t2);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;text-align:left;font-family:var(--fb);white-space:nowrap}
+.sp i{width:15px;text-align:center;font-size:.78rem;flex-shrink:0}
 .sp:hover,.sp.ac{background:var(--gg);color:var(--g)}.sp.ac{font-weight:600}
 .dv{height:1px;background:var(--bd);margin:1rem 0}
 .fi{display:flex;align-items:center;justify-content:space-between;padding:.4rem .5rem;background:var(--bg3);border-radius:var(--rs);margin-bottom:.3rem;font-size:.78rem}
@@ -113,19 +114,20 @@ header{height:var(--hh);background:rgba(11,12,20,.93);backdrop-filter:blur(20px)
 .mc.lv{border-left:3px solid var(--red)}
 .mc.ht::after{content:'HT';position:absolute;top:.5rem;right:.5rem;background:var(--g);color:#0B0C14;font-size:.6rem;font-weight:800;padding:.15rem .4rem;border-radius:4px;letter-spacing:1px}
 .mc.ft::after{content:'FT';position:absolute;top:.5rem;right:.5rem;background:var(--blue);color:#fff;font-size:.6rem;font-weight:800;padding:.15rem .4rem;border-radius:4px;letter-spacing:1px}
-.mch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;font-size:.73rem;color:var(--t2)}
-.mcl{display:flex;align-items:center;gap:.38rem}
+.mch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;font-size:.7rem;color:var(--t2);gap:.4rem}
+.mcl{display:flex;align-items:center;gap:.35rem;min-width:0;overflow:hidden}
+.mcl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ld2{width:17px;height:17px;background:linear-gradient(135deg,var(--g),var(--gd));border-radius:50%;display:grid;place-items:center;font-size:.52rem;color:#0B0C14;font-weight:800;flex-shrink:0}
 .ms2{background:none;border:none;color:var(--t3);cursor:pointer;font-size:.85rem;transition:color .2s,transform .2s;padding:0 .2rem}
 .ms2:hover{color:var(--g);transform:scale(1.2)}.ms2.on{color:var(--g)}
-.scr{font-family:var(--fh);font-size:.95rem;font-weight:700;color:var(--red);animation:sp 2s infinite}
+.scr{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--red);animation:sp 2s infinite;flex-shrink:0;min-width:42px;text-align:center}
 @keyframes sp{0%,100%{opacity:1}50%{opacity:.6}}
 .mtm{font-weight:600;color:var(--green)}
-.mts{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.8rem}
-.tm{display:flex;align-items:center;gap:.55rem;flex:1;min-width:0}
+.mts{display:flex;align-items:center;justify-content:space-between;gap:.3rem;margin-bottom:.8rem}
+.tm{display:flex;align-items:center;gap:.4rem;flex:1;min-width:0;overflow:hidden}
 .tm.aw{flex-direction:row-reverse}
-.tb{width:clamp(30px,4vw,38px);height:clamp(30px,4vw,38px);background:var(--bg3);border:1px solid var(--bd);border-radius:50%;display:grid;place-items:center;font-size:clamp(.5rem,.9vw,.65rem);font-weight:800;color:var(--t2);flex-shrink:0;letter-spacing:-.5px}
-.tn{font-size:clamp(.75rem,1.1vw,.88rem);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb{width:clamp(28px,3.5vw,34px);height:clamp(28px,3.5vw,34px);background:var(--bg3);border:1px solid var(--bd);border-radius:50%;display:grid;place-items:center;font-size:clamp(.48rem,.75vw,.6rem);font-weight:800;color:var(--t2);flex-shrink:0;letter-spacing:-.3px}
+.tn{font-size:clamp(.7rem,.95vw,.82rem);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
 .vs{font-family:var(--fh);font-size:.7rem;font-weight:700;background:var(--gg);border:1px solid var(--gr);color:var(--g);border-radius:5px;padding:.18rem .45rem;flex-shrink:0}
 .or{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
 .op{background:var(--bg3);border:1.5px solid var(--bd);border-radius:var(--rs);padding:.55rem .35rem;text-align:center;cursor:pointer;transition:all .2s;user-select:none;position:relative;overflow:hidden}
@@ -298,8 +300,119 @@ header{height:var(--hh);background:rgba(11,12,20,.93);backdrop-filter:blur(20px)
 /* VIRTUAL */
 .vs2{background:linear-gradient(135deg,rgba(138,43,226,.08),var(--bg3));border:1px solid rgba(138,43,226,.2);border-radius:var(--r);padding:1.2rem;margin-bottom:1.4rem;display:none}
 .vs2.open{display:block;animation:fsd .3s ease}
-.vm{background:var(--cd2);border:1px solid var(--bd);border-radius:var(--rs);padding:.8rem;margin-bottom:.65rem;position:relative}
-.vt{position:absolute;top:.45rem;right:.45rem;background:var(--red);color:#fff;padding:.12rem .38rem;border-radius:4px;font-size:.62rem;font-weight:700}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:.85rem}
+.vm{background:var(--cd2);border:1px solid var(--bd);border-radius:12px;padding:.9rem;position:relative;transition:border-color .2s}
+.vm:hover{border-color:rgba(138,43,226,.4)}
+.vt{display:inline-flex;align-items:center;gap:.3rem;background:var(--red);color:#fff;padding:.15rem .45rem;border-radius:5px;font-size:.62rem;font-weight:800;letter-spacing:.5px}
+.vt-upcoming{background:rgba(59,130,246,.2);color:var(--blue);padding:.15rem .45rem;border-radius:5px;font-size:.62rem;font-weight:700;display:inline-block}
+.v-score-box{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:.3rem .7rem;font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--red);min-width:52px;text-align:center}
+.v-odds-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.7rem}
+.v-odd{background:var(--bg3);border:1.5px solid var(--bd);border-radius:7px;padding:.4rem .3rem;text-align:center;cursor:pointer;transition:all .2s}
+.v-odd:hover{border-color:var(--g);background:var(--gg);transform:translateY(-1px)}
+.v-odd.selected{background:var(--g);border-color:var(--g)}
+.v-odd.selected .v-odd-val,.v-odd.selected .v-odd-lbl{color:#0B0C14}
+.v-odd.locked{opacity:.4;pointer-events:none}
+.v-odd-lbl{font-size:.6rem;color:var(--t3);margin-bottom:1px}
+.v-odd-val{font-weight:700;font-size:.85rem}
+.v-bet-input{width:100%;padding:.45rem .6rem;background:var(--bg2);border:1.5px solid var(--bd);border-radius:7px;color:var(--t);font-size:.82rem;font-weight:600;outline:none;margin-top:.6rem;font-family:var(--fb);transition:border-color .2s}
+.v-bet-input:focus{border-color:var(--g)}
+.v-place-btn{width:100%;margin-top:.5rem;padding:.5rem;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:8px;color:#0B0C14;font-family:var(--fh);font-weight:800;font-size:.82rem;cursor:pointer;transition:all .2s}
+.v-place-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(245,197,24,.4)}
+.v-result-banner{margin-top:.6rem;padding:.5rem .7rem;border-radius:8px;font-weight:700;font-size:.78rem;text-align:center;display:none}
+.v-result-banner.win{background:rgba(34,197,94,.15);color:var(--green);display:block}
+.v-result-banner.lose{background:rgba(239,68,68,.12);color:var(--red);display:block}
+.v-timer-bar{height:3px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:.6rem}
+.v-timer-fill{height:100%;background:var(--purple);border-radius:3px;transition:width 1s linear}
+/* GAMES SECTION */
+.games-section{max-width:1440px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 4rem;display:none}
+.games-section.open{display:block;animation:fsd .3s ease}
+.games-hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:1rem;margin-bottom:2rem}
+.game-thumb{background:var(--cd);border:1px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.game-thumb:hover{border-color:var(--gr);transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.game-thumb-banner{height:95px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative}
+.game-thumb-info{padding:.7rem .85rem .9rem}
+.game-thumb-name{font-family:var(--fh);font-size:.88rem;font-weight:800;margin-bottom:.15rem}
+.game-thumb-rtp{font-size:.66rem;color:var(--t3)}
+.game-thumb-tag{position:absolute;top:.45rem;left:.45rem;font-size:.58rem;font-weight:800;padding:.15rem .4rem;border-radius:5px;letter-spacing:.5px}
+.tag-hot{background:var(--red);color:#fff}.tag-new{background:var(--green);color:#fff}.tag-top{background:var(--g);color:#0B0C14}
+.game-panel{background:var(--cd);border:1px solid var(--bd);border-radius:20px;padding:1.4rem;margin-bottom:2rem;display:none}
+.game-panel.open{display:block;animation:fsd .25s ease}
+.gp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.6rem}
+.gp-title{font-family:var(--fh);font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:.5rem}
+.gp-close{background:none;border:1px solid var(--bd);color:var(--t2);padding:.32rem .7rem;border-radius:8px;font-size:.75rem;cursor:pointer;font-family:var(--fb);transition:all .2s}
+.gp-close:hover{border-color:var(--red);color:var(--red)}
+.gp-body{display:grid;grid-template-columns:1fr 270px;gap:1.2rem}
+@media(max-width:700px){.gp-body{grid-template-columns:1fr}}
+.gp-display{background:var(--bg2);border-radius:14px;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem;padding:1.5rem;position:relative;overflow:hidden}
+.gp-controls{background:var(--bg3);border-radius:14px;padding:1rem;display:flex;flex-direction:column;gap:.7rem}
+.gp-label{font-size:.72rem;color:var(--t2);font-weight:600;margin-bottom:.3rem}
+.gp-input{width:100%;padding:.55rem .75rem;background:var(--bg2);border:1.5px solid var(--bd);border-radius:9px;color:var(--t);font-size:.9rem;font-weight:700;outline:none;font-family:var(--fb);transition:border-color .2s}
+.gp-input:focus{border-color:var(--g)}
+.gp-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;margin-top:.3rem}
+.gp-qb{background:var(--bg2);border:1px solid var(--bd);color:var(--t2);padding:.28rem .2rem;border-radius:6px;font-size:.68rem;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--fb)}
+.gp-qb:hover{background:var(--gg);border-color:var(--gr);color:var(--g)}
+.gp-play-btn{width:100%;padding:.72rem;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:10px;color:#0B0C14;font-family:var(--fh);font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s}
+.gp-play-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 20px rgba(245,197,24,.4)}
+.gp-play-btn:disabled{opacity:.5;cursor:not-allowed}
+.gp-win-display{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:.6rem .8rem;display:flex;justify-content:space-between;align-items:center}
+.gp-win-label{font-size:.73rem;color:var(--t2)}
+.gp-win-val{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:var(--green)}
+.gp-history{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.5rem}
+.gp-hist-win{background:rgba(34,197,94,.15);color:var(--green);padding:.2rem .4rem;border-radius:5px;font-size:.68rem;font-weight:700}
+.gp-hist-loss{background:rgba(239,68,68,.12);color:var(--red);padding:.2rem .4rem;border-radius:5px;font-size:.68rem;font-weight:700}
+/* DICE */
+.dice-face{font-size:5rem;transition:all .3s;display:block;line-height:1}
+.dice-rolling{animation:diceRoll .5s ease}
+@keyframes diceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(90deg) scale(1.2)}75%{transform:rotate(270deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
+.dice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.dice-btn{background:var(--bg2);border:2px solid var(--bd);border-radius:10px;padding:.55rem;text-align:center;cursor:pointer;transition:all .2s;font-size:1.4rem}
+.dice-btn:hover{border-color:var(--g);background:var(--gg)}
+.dice-btn.sel{background:var(--gg);border-color:var(--g)}
+/* COIN */
+.coin{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.2rem;box-shadow:0 8px 30px rgba(0,0,0,.4);transition:all .3s}
+.coin-h{background:linear-gradient(135deg,#F5C518,#C49A0A);color:#0B0C14}
+.coin-t{background:linear-gradient(135deg,#8A8DB5,#555880);color:#fff}
+.coin-flip-anim{animation:coinFlip .6s ease}
+@keyframes coinFlip{50%{transform:rotateY(900deg) scale(1.2)}100%{transform:rotateY(1800deg)}}
+.coin-choice{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.coin-btn{padding:.75rem;border-radius:10px;border:2px solid var(--bd);background:var(--bg2);cursor:pointer;font-weight:700;font-size:.9rem;transition:all .2s;font-family:var(--fb)}
+.coin-btn.sel{background:var(--gg);border-color:var(--g);color:var(--g)}
+.coin-btn:hover{transform:translateY(-2px)}
+/* COLORS */
+.color-display{width:120px;height:120px;border-radius:18px;transition:background .4s;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.color-anim{animation:colorPop .35s ease}
+@keyframes colorPop{50%{transform:scale(1.15)}}
+.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+.color-btn{height:48px;border-radius:10px;border:2px solid transparent;cursor:pointer;transition:all .2s;font-weight:700;font-size:.75rem;color:#fff}
+.color-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.color-btn.sel{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+/* PENALTY */
+.penalty-field{position:relative;width:100%;max-width:310px;height:175px;background:linear-gradient(180deg,#1a3d1a,#245024);border-radius:12px;overflow:hidden;margin:0 auto}
+.penalty-goal{position:absolute;top:12%;left:50%;transform:translateX(-50%);width:68%;height:58%;border:3px solid rgba(255,255,255,.8);border-bottom:none;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr}
+.penalty-zone{border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.penalty-zone:hover{background:rgba(255,255,255,.2)}
+.penalty-zone.target{background:rgba(245,197,24,.4)}
+.penalty-zone.saved{background:rgba(239,68,68,.5)}
+.penalty-zone.scored{background:rgba(34,197,94,.5)}
+.pk-score{font-family:var(--fh);font-size:2.2rem;font-weight:900;color:var(--g)}
+/* MINES */
+.mines-grid{display:grid;gap:.4rem;width:100%;max-width:310px;margin:0 auto}
+.mine-cell{aspect-ratio:1;background:var(--bg3);border:2px solid var(--bd);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s}
+.mine-cell:hover:not(.revealed){background:var(--gg);border-color:var(--gr);transform:scale(1.05)}
+.mine-cell.gem{background:rgba(34,197,94,.2);border-color:var(--green);animation:gemR .3s ease}
+.mine-cell.bomb{background:rgba(239,68,68,.2);border-color:var(--red)}
+.mine-cell.revealed{pointer-events:none}
+@keyframes gemR{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.mines-mult{font-family:var(--fh);font-size:2.5rem;font-weight:900;color:var(--g)}
+.mines-cashout{width:100%;padding:.7rem;background:linear-gradient(135deg,var(--green),#16a34a);border:none;border-radius:10px;color:#fff;font-family:var(--fh);font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s;display:none}
+.mines-cashout.show{display:block;animation:cp 1.5s infinite}
+/* WIN FEED */
+.win-feed{position:fixed;bottom:5.5rem;left:1.75rem;z-index:700;display:flex;flex-direction:column;gap:.4rem;pointer-events:none;max-width:240px}
+.wf-item{background:rgba(26,27,42,.96);border:1px solid var(--gr);border-radius:10px;padding:.5rem .7rem;font-size:.7rem;display:flex;align-items:center;gap:.5rem;animation:wfIn .4s ease;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+@keyframes wfIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.wf-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gd));display:grid;place-items:center;font-size:.62rem;font-weight:800;color:#0B0C14;flex-shrink:0}
+.wf-name{font-weight:700;color:var(--t)}
+.wf-amt{color:var(--green);font-weight:800}
 
 /* MODALS */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:2000;justify-content:center;align-items:center;padding:1rem;overscroll-behavior:contain}
@@ -446,9 +559,9 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
     <ul class="nv">
       <li><a onclick="showSection('main')">Sports</a></li>
       <li><a onclick="showSection('main')">Live</a></li>
-      <li><a onclick="toggleAviator()">Aviator</a></li>
-      <li><a onclick="toggleVirtual()">Virtual</a></li>
-      <li><a onclick="showToast('Promotions')">Promos</a></li>
+      <li><a onclick="toggleAviator()">✈️ Aviator</a></li>
+      <li><a onclick="showSection('games')" style="color:var(--g)">🎮 Games</a></li>
+      <li><a onclick="toggleVirtual()">⚽ Virtual</a></li>
       <li><a onclick="openModal('vipModal')">VIP</a></li>
     </ul>
     <div class="hr">
@@ -529,7 +642,257 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
   </div>
 </section>
 
-<!-- MAIN CONTENT -->
+<!-- WIN FEED -->
+<div class="win-feed" id="winFeed"></div>
+
+<!-- GAMES SECTION -->
+<div class="games-section" id="gamesSection">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem">
+    <div style="font-family:var(--fh);font-size:1.5rem;font-weight:800">🎮 Games Hub <span style="font-size:.8rem;color:var(--t2);font-weight:500">— Play & Win Real Money</span></div>
+    <button class="btn bo" onclick="showSection('main')">← Back to Sports</button>
+  </div>
+  <!-- GAME THUMBS -->
+  <div class="games-hub-grid">
+    <div class="game-thumb" onclick="openGame('dice')">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#1a1b30,#2a1060)"><span>🎲</span></div>
+      <span class="game-thumb-tag tag-hot">HOT</span>
+      <div class="game-thumb-info"><div class="game-thumb-name">Dice Roll</div><div class="game-thumb-rtp">RTP 98% • Up to 6x</div></div>
+    </div>
+    <div class="game-thumb" onclick="openGame('coin')">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#1a2a10,#2a3d10)"><span>🪙</span></div>
+      <span class="game-thumb-tag tag-top">TOP</span>
+      <div class="game-thumb-info"><div class="game-thumb-name">Coin Flip</div><div class="game-thumb-rtp">RTP 97% • Up to 1.9x</div></div>
+    </div>
+    <div class="game-thumb" onclick="openGame('color')">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#1a0a2a,#2a1040)"><span>🎨</span></div>
+      <span class="game-thumb-tag tag-new">NEW</span>
+      <div class="game-thumb-info"><div class="game-thumb-name">Color Predict</div><div class="game-thumb-rtp">RTP 96% • Up to 9x</div></div>
+    </div>
+    <div class="game-thumb" onclick="openGame('penalty')">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#0a1a0a,#0a2d0a)"><span>⚽</span></div>
+      <div class="game-thumb-info"><div class="game-thumb-name">Penalty Shootout</div><div class="game-thumb-rtp">RTP 96% • Up to 3x</div></div>
+    </div>
+    <div class="game-thumb" onclick="openGame('mines')">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#2a1010,#3d1a0a)"><span>💣</span></div>
+      <span class="game-thumb-tag tag-hot">HOT</span>
+      <div class="game-thumb-info"><div class="game-thumb-name">Mines</div><div class="game-thumb-rtp">RTP 97% • Up to 25x</div></div>
+    </div>
+    <div class="game-thumb" onclick="toggleAviator()">
+      <div class="game-thumb-banner" style="background:linear-gradient(135deg,#0a0a2a,#1a1040)"><span>✈️</span></div>
+      <span class="game-thumb-tag tag-top">TOP</span>
+      <div class="game-thumb-info"><div class="game-thumb-name">Aviator</div><div class="game-thumb-rtp">RTP 97% • Unlimited</div></div>
+    </div>
+  </div>
+
+  <!-- ACTIVE GAME PANELS -->
+  <!-- DICE -->
+  <div class="game-panel" id="game-dice">
+    <div class="gp-header">
+      <div class="gp-title">🎲 Dice Roll</div>
+      <div style="font-size:.75rem;color:var(--t2)">Pick a number, roll the dice</div>
+      <button class="gp-close" onclick="closeGame('dice')">✕ Close</button>
+    </div>
+    <div class="gp-body">
+      <div class="gp-display" id="dice-display">
+        <span class="dice-face" id="diceResult">🎲</span>
+        <div style="font-size:.85rem;color:var(--t2)" id="diceMsg">Pick a number and roll!</div>
+      </div>
+      <div class="gp-controls">
+        <div>
+          <div class="gp-label">Choose your number</div>
+          <div class="dice-grid" id="diceChoices">
+            <div class="dice-btn" onclick="selectDice(1)">1️⃣</div>
+            <div class="dice-btn" onclick="selectDice(2)">2️⃣</div>
+            <div class="dice-btn" onclick="selectDice(3)">3️⃣</div>
+            <div class="dice-btn" onclick="selectDice(4)">4️⃣</div>
+            <div class="dice-btn" onclick="selectDice(5)">5️⃣</div>
+            <div class="dice-btn" onclick="selectDice(6)">6️⃣</div>
+          </div>
+        </div>
+        <div>
+          <div class="gp-label">Bet Amount</div>
+          <input class="gp-input" id="diceBet" type="number" value="500" min="100">
+          <div class="gp-quick">
+            <div class="gp-qb" onclick="setGameBet('diceBet',100)">₦100</div>
+            <div class="gp-qb" onclick="setGameBet('diceBet',500)">₦500</div>
+            <div class="gp-qb" onclick="setGameBet('diceBet',1000)">₦1k</div>
+            <div class="gp-qb" onclick="setGameBet('diceBet',5000)">₦5k</div>
+          </div>
+        </div>
+        <div class="gp-win-display"><span class="gp-win-label">Win if correct</span><span class="gp-win-val" id="diceWinAmt">₦3,000</span></div>
+        <button class="gp-play-btn" id="diceRollBtn" onclick="playDice()">🎲 Roll Dice</button>
+        <div class="gp-history" id="diceHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COIN FLIP -->
+  <div class="game-panel" id="game-coin">
+    <div class="gp-header">
+      <div class="gp-title">🪙 Coin Flip</div>
+      <div style="font-size:.75rem;color:var(--t2)">Heads or Tails — 50/50</div>
+      <button class="gp-close" onclick="closeGame('coin')">✕ Close</button>
+    </div>
+    <div class="gp-body">
+      <div class="gp-display" id="coin-display">
+        <div class="coin coin-h" id="coinFace">👑</div>
+        <div style="font-size:.85rem;color:var(--t2)" id="coinMsg">Pick Heads or Tails!</div>
+      </div>
+      <div class="gp-controls">
+        <div>
+          <div class="gp-label">Your Pick</div>
+          <div class="coin-choice">
+            <button class="coin-btn head" onclick="selectCoin('heads')">👑 Heads</button>
+            <button class="coin-btn tail" onclick="selectCoin('tails')">🦅 Tails</button>
+          </div>
+        </div>
+        <div>
+          <div class="gp-label">Bet Amount</div>
+          <input class="gp-input" id="coinBet" type="number" value="500" min="100">
+          <div class="gp-quick">
+            <div class="gp-qb" onclick="setGameBet('coinBet',100)">₦100</div>
+            <div class="gp-qb" onclick="setGameBet('coinBet',500)">₦500</div>
+            <div class="gp-qb" onclick="setGameBet('coinBet',1000)">₦1k</div>
+            <div class="gp-qb" onclick="setGameBet('coinBet',5000)">₦5k</div>
+          </div>
+        </div>
+        <div class="gp-win-display"><span class="gp-win-label">Win amount</span><span class="gp-win-val" id="coinWinAmt">₦950</span></div>
+        <button class="gp-play-btn" id="coinFlipBtn" onclick="playCoin()">🪙 Flip Coin</button>
+        <div class="gp-history" id="coinHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOR PREDICT -->
+  <div class="game-panel" id="game-color">
+    <div class="gp-header">
+      <div class="gp-title">🎨 Color Predict</div>
+      <div style="font-size:.75rem;color:var(--t2)">Pick a color, win up to 9x</div>
+      <button class="gp-close" onclick="closeGame('color')">✕ Close</button>
+    </div>
+    <div class="gp-body">
+      <div class="gp-display" id="color-display">
+        <div class="color-display" id="colorResult" style="background:var(--bg3)"></div>
+        <div style="font-size:.9rem;font-weight:700" id="colorMsg">Pick a color!</div>
+      </div>
+      <div class="gp-controls">
+        <div>
+          <div class="gp-label">Pick a color (multiplier)</div>
+          <div class="color-grid">
+            <button class="color-btn" style="background:#EF4444" onclick="selectColor('Red','2x',2)">Red<br><small>2x</small></button>
+            <button class="color-btn" style="background:#22C55E" onclick="selectColor('Green','2x',2)">Green<br><small>2x</small></button>
+            <button class="color-btn" style="background:#3B82F6" onclick="selectColor('Blue','2x',2)">Blue<br><small>2x</small></button>
+            <button class="color-btn" style="background:#F97316" onclick="selectColor('Orange','3x',3)">Orange<br><small>3x</small></button>
+            <button class="color-btn" style="background:#8B5CF6" onclick="selectColor('Purple','3x',3)">Purple<br><small>3x</small></button>
+            <button class="color-btn" style="background:#EC4899" onclick="selectColor('Pink','3x',3)">Pink<br><small>3x</small></button>
+            <button class="color-btn" style="background:#EAB308" onclick="selectColor('Yellow','5x',5)">Yellow<br><small>5x</small></button>
+            <button class="color-btn" style="background:#14B8A6" onclick="selectColor('Teal','5x',5)">Teal<br><small>5x</small></button>
+            <button class="color-btn" style="background:#1a1b2a;border:1px solid var(--bd)" onclick="selectColor('Black','9x',9)">Black<br><small>9x</small></button>
+          </div>
+        </div>
+        <div>
+          <div class="gp-label">Bet Amount</div>
+          <input class="gp-input" id="colorBet" type="number" value="500" min="100">
+          <div class="gp-quick">
+            <div class="gp-qb" onclick="setGameBet('colorBet',100)">₦100</div>
+            <div class="gp-qb" onclick="setGameBet('colorBet',500)">₦500</div>
+            <div class="gp-qb" onclick="setGameBet('colorBet',1000)">₦1k</div>
+            <div class="gp-qb" onclick="setGameBet('colorBet',5000)">₦5k</div>
+          </div>
+        </div>
+        <div class="gp-win-display"><span class="gp-win-label">Potential win</span><span class="gp-win-val" id="colorWinAmt">₦0</span></div>
+        <button class="gp-play-btn" id="colorSpinBtn" onclick="playColor()">🎨 Spin!</button>
+        <div class="gp-history" id="colorHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENALTY SHOOTOUT -->
+  <div class="game-panel" id="game-penalty">
+    <div class="gp-header">
+      <div class="gp-title">⚽ Penalty Shootout</div>
+      <div style="font-size:.75rem;color:var(--t2)">Pick a zone, beat the keeper</div>
+      <button class="gp-close" onclick="closeGame('penalty')">✕ Close</button>
+    </div>
+    <div class="gp-body">
+      <div class="gp-display" id="penalty-display">
+        <div style="text-align:center;margin-bottom:.8rem">
+          <div style="font-size:.72rem;color:var(--t2);margin-bottom:.3rem" id="pkRound">Round 1 of 5</div>
+          <div class="pk-score" id="pkScore">0 - 0</div>
+          <div style="font-size:.7rem;color:var(--t3);margin-top:.2rem" id="pkStatus">Pick a zone to shoot!</div>
+        </div>
+        <div class="penalty-field">
+          <div class="penalty-goal" id="penaltyGoal">
+            <div class="penalty-zone" onclick="shootPenalty(0)" id="pz0"></div>
+            <div class="penalty-zone" onclick="shootPenalty(1)" id="pz1"></div>
+            <div class="penalty-zone" onclick="shootPenalty(2)" id="pz2"></div>
+            <div class="penalty-zone" onclick="shootPenalty(3)" id="pz3"></div>
+            <div class="penalty-zone" onclick="shootPenalty(4)" id="pz4"></div>
+            <div class="penalty-zone" onclick="shootPenalty(5)" id="pz5"></div>
+          </div>
+        </div>
+      </div>
+      <div class="gp-controls">
+        <div class="gp-win-display"><span class="gp-win-label">Score 3+ goals to win!</span><span class="gp-win-val" id="pkMulti">2.00x</span></div>
+        <div>
+          <div class="gp-label">Bet Amount</div>
+          <input class="gp-input" id="penaltyBet" type="number" value="500" min="100">
+          <div class="gp-quick">
+            <div class="gp-qb" onclick="setGameBet('penaltyBet',100)">₦100</div>
+            <div class="gp-qb" onclick="setGameBet('penaltyBet',500)">₦500</div>
+            <div class="gp-qb" onclick="setGameBet('penaltyBet',1000)">₦1k</div>
+            <div class="gp-qb" onclick="setGameBet('penaltyBet',5000)">₦5k</div>
+          </div>
+        </div>
+        <button class="gp-play-btn" id="pkStartBtn" onclick="startPenalty()">⚽ Start Game</button>
+        <div class="gp-history" id="penaltyHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINES -->
+  <div class="game-panel" id="game-mines">
+    <div class="gp-header">
+      <div class="gp-title">💣 Mines</div>
+      <div style="font-size:.75rem;color:var(--t2)">Find gems, avoid bombs</div>
+      <button class="gp-close" onclick="closeGame('mines')">✕ Close</button>
+    </div>
+    <div class="gp-body">
+      <div class="gp-display" id="mines-display">
+        <div style="text-align:center;margin-bottom:.7rem">
+          <div class="mines-mult" id="minesMulti">1.00x</div>
+          <div style="font-size:.78rem;color:var(--t2)" id="minesMsg">Start a new game!</div>
+        </div>
+        <div class="mines-grid" id="minesGrid" style="grid-template-columns:repeat(5,1fr)"></div>
+        <button class="mines-cashout" id="minesCashout" onclick="minesCashOut()">💰 Cash Out</button>
+      </div>
+      <div class="gp-controls">
+        <div>
+          <div class="gp-label">Number of Mines</div>
+          <select class="gp-input" id="minesCount" style="cursor:pointer">
+            <option value="3">3 Mines (Easy)</option>
+            <option value="5" selected>5 Mines (Normal)</option>
+            <option value="8">8 Mines (Hard)</option>
+            <option value="12">12 Mines (Extreme)</option>
+          </select>
+        </div>
+        <div>
+          <div class="gp-label">Bet Amount</div>
+          <input class="gp-input" id="minesBet" type="number" value="1000" min="100">
+          <div class="gp-quick">
+            <div class="gp-qb" onclick="setGameBet('minesBet',100)">₦100</div>
+            <div class="gp-qb" onclick="setGameBet('minesBet',500)">₦500</div>
+            <div class="gp-qb" onclick="setGameBet('minesBet',1000)">₦1k</div>
+            <div class="gp-qb" onclick="setGameBet('minesBet',5000)">₦5k</div>
+          </div>
+        </div>
+        <div class="gp-win-display"><span class="gp-win-label">Current payout</span><span class="gp-win-val" id="minesPayoutAmt">₦0</span></div>
+        <button class="gp-play-btn" id="minesStartBtn" onclick="startMines()">💣 New Game</button>
+        <div class="gp-history" id="minesHistory"></div>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="mainContent">
   <!-- HERO -->
   <section class="hero">
@@ -572,10 +935,10 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
   <div style="max-width:1440px;margin:1.25rem auto 0;padding:0 clamp(1rem,3vw,2rem)">
     <div class="vs2" id="vsec">
       <div class="ph" style="margin-bottom:1rem">
-        <span class="pt"><i class="fas fa-robot" style="color:#8a2be2"></i>&ensp;Virtual Sports</span>
+        <span class="pt"><i class="fas fa-robot" style="color:#8b5cf6"></i>&ensp;Virtual Sports <span style="font-size:.72rem;color:var(--t2);font-weight:400">— Simulated matches every few minutes</span></span>
         <button class="btn bo" style="padding:.38rem .95rem;font-size:.75rem" onclick="toggleVirtual()">Close</button>
       </div>
-      <div id="vmatches"></div>
+      <div class="vgrid" id="vmatches"></div>
     </div>
   </div>
 
@@ -591,6 +954,19 @@ footer{background:var(--cd);border-top:1px solid var(--bd);margin-top:4rem;paddi
         <button class="sp" onclick="filterSport('cricket',this)"><i class="fas fa-baseball-ball"></i> Cricket</button>
         <button class="sp" onclick="filterSport('rugby',this)"><i class="fas fa-football-ball"></i> Rugby</button>
         <button class="sp" onclick="filterSport('esports',this)"><i class="fas fa-gamepad"></i> Esports</button>
+        <button class="sp" onclick="filterSport('baseball',this)"><i class="fas fa-baseball-ball"></i> Baseball</button>
+        <button class="sp" onclick="filterSport('mma',this)"><i class="fas fa-fist-raised"></i> MMA / Boxing</button>
+        <button class="sp" onclick="filterSport('golf',this)"><i class="fas fa-golf-ball"></i> Golf</button>
+        <button class="sp" onclick="filterSport('hockey',this)"><i class="fas fa-hockey-puck"></i> Ice Hockey</button>
+        <button class="sp" onclick="filterSport('volleyball',this)"><i class="fas fa-volleyball-ball"></i> Volleyball</button>
+        <button class="sp" onclick="filterSport('handball',this)"><i class="fas fa-hand-paper"></i> Handball</button>
+        <button class="sp" onclick="filterSport('tabletennis',this)"><i class="fas fa-table-tennis"></i> Table Tennis</button>
+        <button class="sp" onclick="filterSport('snooker',this)"><i class="fas fa-circle"></i> Snooker</button>
+        <button class="sp" onclick="filterSport('darts',this)"><i class="fas fa-bullseye"></i> Darts</button>
+        <button class="sp" onclick="filterSport('cycling',this)"><i class="fas fa-bicycle"></i> Cycling</button>
+        <button class="sp" onclick="filterSport('athletics',this)"><i class="fas fa-running"></i> Athletics</button>
+        <button class="sp" onclick="filterSport('swimming',this)"><i class="fas fa-swimmer"></i> Swimming</button>
+        <button class="sp" onclick="filterSport('boxing',this)"><i class="fas fa-hand-rock"></i> Boxing</button>
       </div>
       <div class="dv"></div>
       <div style="margin-bottom:1.25rem">
@@ -1274,6 +1650,46 @@ function endMatch(matchId) {
   showToast('Full Time!', `${match.home} ${state.homeScore}-${state.awayScore} ${match.away}`);
   renderMatches();
   settleBets(matchId, result);
+
+  // CYCLE: immediately activate any scheduled matches (Today/Tomorrow/time)
+  activateScheduledMatches();
+
+  // CYCLE: 15 seconds after FT, spawn a brand new random match
+  setTimeout(() => {
+    spawnRandomMatch();
+  }, 15000);
+}
+
+function activateScheduledMatches() {
+  // Matches that have a scheduled time label (not live, not FT) get kicked off now
+  const timePattern = /^(Today|Tomorrow|\d{1,2}:\d{2}|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/i;
+  let activated = 0;
+
+  matchesData.forEach(m => {
+    if(!m.live && !m.ft && m.score === null && timePattern.test(m.time)) {
+      // Kick this match off as live immediately
+      m.live = true;
+      m.score = '0-0';
+      m.time = '1\'';
+      m.ht = false;
+
+      // Stagger starts slightly so they don't all fire at same instant
+      setTimeout(() => {
+        if(!matchStates[m.id]) {
+          startMatchSimulation(m.id);
+        }
+      }, activated * 800);
+
+      activated++;
+    }
+  });
+
+  if(activated > 0) {
+    setTimeout(() => {
+      showToast('Matches Kicking Off!', `${activated} scheduled match${activated > 1 ? 'es have' : ' has'} started`);
+      renderMatches();
+    }, 500);
+  }
 }
 function spawnRandomMatch() {
   const leagues = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'NPFL', 'Champions League', 'Europa League'];
@@ -1293,29 +1709,29 @@ function spawnRandomMatch() {
   while(away === home) away = leagueTeams[Math.floor(Math.random() * leagueTeams.length)];
   
   const newId = Math.max(...matchesData.map(m => m.id)) + 1;
-  const isLive = Math.random() > 0.5;
   
+  // Spawned replacement matches always kick off live
   const newMatch = {
     id: newId,
     sport: 'football',
     league: leagues[leagueIdx],
-    live: isLive,
-    time: isLive ? '1\'' : 'Tomorrow ' + (16 + Math.floor(Math.random()*8)) + ':00',
+    live: true,
+    time: '1\'',
     home: home,
     away: away,
     hOdds: parseFloat((1.3 + Math.random()*3).toFixed(2)),
     dOdds: parseFloat((2.8 + Math.random()*2).toFixed(2)),
     aOdds: parseFloat((1.5 + Math.random()*4).toFixed(2)),
-    score: isLive ? '0-0' : null,
+    score: '0-0',
     ht: false,
     ft: false
   };
   
   matchesData.push(newMatch);
-  if(isLive) startMatchSimulation(newId);
+  startMatchSimulation(newId);
   renderMatches();
   
-  showToast('New Match!', `${home} vs ${away} added`);
+  showToast('New Match!', `${home} vs ${away} — Kick Off!`);
 }
 
 function checkBets(matchId) {
@@ -1451,94 +1867,172 @@ document.head.appendChild(style);
 
 // MATCHES DATA
 const matchesData = [
-  // FOOTBALL - England
-  {id: 1, sport: 'football', league: 'Premier League', live: true, time: '1\'', home: 'Man City', away: 'Liverpool', hOdds: 1.85, dOdds: 3.40, aOdds: 4.20, score: '0-0', ht: false, ft: false},
-  {id: 2, sport: 'football', league: 'Premier League', live: false, time: 'Tomorrow 16:00', home: 'Arsenal', away: 'Chelsea', hOdds: 2.10, dOdds: 3.30, aOdds: 3.40, score: null, ht: false, ft: false},
-  {id: 3, sport: 'football', league: 'Premier League', live: false, time: 'Tomorrow 18:30', home: 'Man United', away: 'Tottenham', hOdds: 2.40, dOdds: 3.50, aOdds: 2.80, score: null, ht: false, ft: false},
-  {id: 4, sport: 'football', league: 'Championship', live: true, time: '12\'', home: 'Leeds United', away: 'Leicester', hOdds: 2.20, dOdds: 3.40, aOdds: 3.20, score: '1-0', ht: false, ft: false},
-  {id: 5, sport: 'football', league: 'FA Cup', live: false, time: 'Today 20:00', home: 'Newcastle', away: 'Brighton', hOdds: 1.95, dOdds: 3.60, aOdds: 3.80, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - Spain
-  {id: 6, sport: 'football', league: 'La Liga', live: true, time: '1\'', home: 'Real Madrid', away: 'Barcelona', hOdds: 2.10, dOdds: 3.20, aOdds: 3.50, score: '0-0', ht: false, ft: false},
-  {id: 7, sport: 'football', league: 'La Liga', live: false, time: 'Tomorrow 21:00', home: 'Atletico Madrid', away: 'Sevilla', hOdds: 1.75, dOdds: 3.60, aOdds: 4.80, score: null, ht: false, ft: false},
-  {id: 8, sport: 'football', league: 'La Liga', live: false, time: 'Saturday 18:00', home: 'Valencia', away: 'Villarreal', hOdds: 2.60, dOdds: 3.30, aOdds: 2.70, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - Italy
-  {id: 9, sport: 'football', league: 'Serie A', live: false, time: 'Tomorrow 19:45', home: 'Juventus', away: 'AC Milan', hOdds: 2.30, dOdds: 3.10, aOdds: 3.20, score: null, ht: false, ft: false},
-  {id: 10, sport: 'football', league: 'Serie A', live: true, time: '34\'', home: 'Inter Milan', away: 'Napoli', hOdds: 1.90, dOdds: 3.50, aOdds: 4.00, score: '2-1', ht: false, ft: false},
-  {id: 11, sport: 'football', league: 'Serie A', live: false, time: 'Sunday 17:00', home: 'Roma', away: 'Lazio', hOdds: 2.40, dOdds: 3.30, aOdds: 2.90, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - Germany
-  {id: 12, sport: 'football', league: 'Bundesliga', live: true, time: '56\'', home: 'Bayern Munich', away: 'Dortmund', hOdds: 1.60, dOdds: 4.20, aOdds: 5.00, score: '1-1', ht: false, ft: false},
-  {id: 13, sport: 'football', league: 'Bundesliga', live: false, time: 'Saturday 15:30', home: 'RB Leipzig', away: 'Bayer Leverkusen', hOdds: 2.20, dOdds: 3.50, aOdds: 3.10, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - France
-  {id: 14, sport: 'football', league: 'Ligue 1', live: false, time: 'Today 21:00', home: 'PSG', away: 'Marseille', hOdds: 1.45, dOdds: 4.50, aOdds: 6.50, score: null, ht: false, ft: false},
-  {id: 15, sport: 'football', league: 'Ligue 1', live: true, time: '78\'', home: 'Lyon', away: 'Monaco', hOdds: 2.30, dOdds: 3.40, aOdds: 3.00, score: '0-2', ht: false, ft: false},
-  
-  // FOOTBALL - Nigeria (NPFL)
-  {id: 16, sport: 'football', league: 'NPFL', live: true, time: '23\'', home: 'Enyimba', away: 'Kano Pillars', hOdds: 1.80, dOdds: 3.40, aOdds: 4.40, score: '0-0', ht: false, ft: false},
-  {id: 17, sport: 'football', league: 'NPFL', live: false, time: 'Tomorrow 16:00', home: 'Rangers Int', away: 'Shooting Stars', hOdds: 1.95, dOdds: 3.30, aOdds: 3.90, score: null, ht: false, ft: false},
-  {id: 18, sport: 'football', league: 'NPFL', live: false, time: 'Sunday 15:00', home: 'Remo Stars', away: 'Plateau United', hOdds: 2.10, dOdds: 3.20, aOdds: 3.60, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - Champions League
-  {id: 19, sport: 'football', league: 'Champions League', live: false, time: 'Wednesday 20:00', home: 'Man City', away: 'Real Madrid', hOdds: 1.95, dOdds: 3.60, aOdds: 3.80, score: null, ht: false, ft: false},
-  {id: 20, sport: 'football', league: 'Champions League', live: true, time: '67\'', home: 'Bayern Munich', away: 'Arsenal', hOdds: 1.85, dOdds: 3.70, aOdds: 4.20, score: '2-0', ht: false, ft: false},
-  
-  // FOOTBALL - Europa League
-  {id: 21, sport: 'football', league: 'Europa League', live: false, time: 'Thursday 18:45', home: 'Liverpool', away: 'Leverkusen', hOdds: 1.70, dOdds: 3.90, aOdds: 4.80, score: null, ht: false, ft: false},
-  
-  // FOOTBALL - International
-  {id: 22, sport: 'football', league: 'World Cup Qualifiers', live: false, time: 'Saturday 20:00', home: 'Nigeria', away: 'Ghana', hOdds: 1.90, dOdds: 3.40, aOdds: 4.20, score: null, ht: false, ft: false},
-  {id: 23, sport: 'football', league: 'AFCON Qualifiers', live: true, time: '45\'', home: 'Cameroon', away: 'Senegal', hOdds: 2.60, dOdds: 3.10, aOdds: 2.80, score: '1-1', ht: false, ft: false},
-  
-  // BASKETBALL - NBA
-  {id: 24, sport: 'basketball', league: 'NBA', live: true, time: 'Q3 08:45', home: 'Lakers', away: 'Warriors', hOdds: 1.65, dOdds: null, aOdds: 2.25, score: '78-82', ht: false, ft: false},
-  {id: 25, sport: 'basketball', league: 'NBA', live: false, time: 'Tonight 01:00', home: 'Celtics', away: 'Heat', hOdds: 1.45, dOdds: null, aOdds: 2.80, score: null, ht: false, ft: false},
-  {id: 26, sport: 'basketball', league: 'NBA', live: false, time: 'Tomorrow 00:30', home: 'Nets', away: 'Bucks', hOdds: 2.10, dOdds: null, aOdds: 1.75, score: null, ht: false, ft: false},
-  {id: 27, sport: 'basketball', league: 'NBA', live: true, time: 'Q4 02:30', home: 'Suns', away: 'Nuggets', hOdds: 1.90, dOdds: null, aOdds: 1.90, score: '95-102', ht: false, ft: false},
-  {id: 28, sport: 'basketball', league: 'NBA', live: false, time: 'Saturday 23:00', home: '76ers', away: 'Knicks', hOdds: 1.55, dOdds: null, aOdds: 2.50, score: null, ht: false, ft: false},
-  
-  // BASKETBALL - EuroLeague
-  {id: 29, sport: 'basketball', league: 'EuroLeague', live: true, time: 'Q2 04:20', home: 'Real Madrid', away: 'Barcelona', hOdds: 1.75, dOdds: null, aOdds: 2.10, score: '38-42', ht: false, ft: false},
-  {id: 30, sport: 'basketball', league: 'EuroLeague', live: false, time: 'Tomorrow 19:00', home: 'Olympiacos', away: 'Panathinaikos', hOdds: 1.85, dOdds: null, aOdds: 2.00, score: null, ht: false, ft: false},
-  
-  // BASKETBALL - Nigeria (NBBF)
-  {id: 31, sport: 'basketball', league: 'Nigerian Premier League', live: false, time: 'Saturday 16:00', home: 'Rivers Hoopers', away: 'Kano Pillars', hOdds: 1.70, dOdds: null, aOdds: 2.20, score: null, ht: false, ft: false},
-  
-  // TENNIS - Grand Slams
-  {id: 32, sport: 'tennis', league: 'Wimbledon', live: true, time: 'Set 3', home: 'Alcaraz', away: 'Djokovic', hOdds: 1.45, dOdds: null, aOdds: 2.80, score: '1-1', ht: false, ft: false},
-  {id: 33, sport: 'tennis', league: 'Wimbledon', live: false, time: 'Tomorrow 13:00', home: 'Sinner', away: 'Medvedev', hOdds: 1.65, dOdds: null, aOdds: 2.30, score: null, ht: false, ft: false},
-  {id: 34, sport: 'tennis', league: 'French Open', live: true, time: 'Set 2', home: 'Nadal', away: 'Federer', hOdds: 1.80, dOdds: null, aOdds: 2.10, score: '1-0', ht: false, ft: false},
-  {id: 35, sport: 'tennis', league: 'US Open', live: false, time: 'Monday 20:00', home: 'Swiatek', away: 'Sabalenka', hOdds: 1.55, dOdds: null, aOdds: 2.50, score: null, ht: false, ft: false},
-  
-  // TENNIS - ATP Tour
-  {id: 36, sport: 'tennis', league: 'ATP Masters', live: true, time: 'Set 1', home: 'Rune', away: 'Tsitsipas', hOdds: 2.10, dOdds: null, aOdds: 1.75, score: '2-3', ht: false, ft: false},
-  
-  // CRICKET - International
-  {id: 37, sport: 'cricket', league: 'IPL', live: true, time: '15.2 ov', home: 'Mumbai Indians', away: 'Chennai Super Kings', hOdds: 1.90, dOdds: null, aOdds: 1.95, score: '156/3', ht: false, ft: false},
-  {id: 38, sport: 'cricket', league: 'IPL', live: false, time: 'Tomorrow 16:00', home: 'RCB', away: 'KKR', hOdds: 1.85, dOdds: null, aOdds: 2.00, score: null, ht: false, ft: false},
-  {id: 39, sport: 'cricket', league: 'Big Bash', live: true, time: '12.4 ov', home: 'Sydney Sixers', away: 'Melbourne Stars', hOdds: 1.75, dOdds: null, aOdds: 2.15, score: '98/2', ht: false, ft: false},
-  {id: 40, sport: 'cricket', league: 'The Ashes', live: false, time: 'Thursday 11:00', home: 'England', away: 'Australia', hOdds: 2.20, dOdds: null, aOdds: 1.70, score: null, ht: false, ft: false},
-  
-  // CRICKET - T20 Leagues
-  {id: 41, sport: 'cricket', league: 'PSL', live: false, time: 'Saturday 14:00', home: 'Karachi Kings', away: 'Lahore Qalandars', hOdds: 1.90, dOdds: null, aOdds: 1.95, score: null, ht: false, ft: false},
-  
-  // ESPORTS
-  {id: 42, sport: 'esports', league: 'CS:GO Major', live: false, time: '18:00', home: 'NAVI', away: 'FaZe', hOdds: 1.75, dOdds: null, aOdds: 2.05, score: null, ht: false, ft: false},
-  {id: 43, sport: 'esports', league: 'CS:GO Major', live: true, time: 'Map 2', home: 'G2', away: 'Vitality', hOdds: 1.90, dOdds: null, aOdds: 1.90, score: '1-0', ht: false, ft: false},
-  {id: 44, sport: 'esports', league: 'LoL Worlds', live: false, time: 'Tomorrow 14:00', home: 'T1', away: 'Gen.G', hOdds: 1.65, dOdds: null, aOdds: 2.30, score: null, ht: false, ft: false},
-  {id: 45, sport: 'esports', league: 'Dota 2 TI', live: true, time: 'Game 3', home: 'Team Spirit', away: 'PSG.LGD', hOdds: 1.80, dOdds: null, aOdds: 2.05, score: '1-1', ht: false, ft: false},
-  {id: 46, sport: 'esports', league: 'Valorant Champions', live: false, time: 'Saturday 19:00', home: 'Sentinels', away: 'Fnatic', hOdds: 1.70, dOdds: null, aOdds: 2.20, score: null, ht: false, ft: false},
-  {id: 47, sport: 'esports', league: 'Call of Duty League', live: true, time: 'Map 3', home: 'Atlanta FaZe', away: 'OpTic Texas', hOdds: 1.85, dOdds: null, aOdds: 2.00, score: '1-1', ht: false, ft: false},
-  
-  // RUGBY
-  {id: 48, sport: 'rugby', league: 'Six Nations', live: false, time: '16:00', home: 'Ireland', away: 'France', hOdds: 1.95, dOdds: 3.50, aOdds: 3.80, score: null, ht: false, ft: false},
-  {id: 49, sport: 'rugby', league: 'Six Nations', live: true, time: '52\'', home: 'England', away: 'Wales', hOdds: 1.70, dOdds: 4.00, aOdds: 4.50, score: '15-10', ht: false, ft: false},
-  {id: 50, sport: 'rugby', league: 'Rugby World Cup', live: false, time: 'Friday 20:00', home: 'New Zealand', away: 'South Africa', hOdds: 1.60, dOdds: 4.50, aOdds: 5.20, score: null, ht: false, ft: false},
-  {id: 51, sport: 'rugby', league: 'Premiership', live: true, time: '34\'', home: 'Leicester Tigers', away: 'Saracens', hOdds: 2.20, dOdds: 3.40, aOdds: 3.20, score: '7-12', ht: false, ft: false},
-  
-  // ADD MORE AS NEEDED...
+  // ─── FOOTBALL: Premier League ───
+  {id:1,sport:'football',league:'Premier League',live:true,time:'23\'',home:'Man City',away:'Liverpool',hOdds:1.85,dOdds:3.40,aOdds:4.20,score:'1-0',ht:false,ft:false},
+  {id:2,sport:'football',league:'Premier League',live:false,time:'Today 17:30',home:'Arsenal',away:'Chelsea',hOdds:2.10,dOdds:3.30,aOdds:3.40,score:null,ht:false,ft:false},
+  {id:3,sport:'football',league:'Premier League',live:false,time:'Tomorrow 15:00',home:'Man United',away:'Tottenham',hOdds:2.40,dOdds:3.50,aOdds:2.80,score:null,ht:false,ft:false},
+  {id:4,sport:'football',league:'Premier League',live:true,time:'61\'',home:'Newcastle',away:'Aston Villa',hOdds:2.20,dOdds:3.30,aOdds:3.10,score:'2-1',ht:false,ft:false},
+  {id:5,sport:'football',league:'Premier League',live:false,time:'Saturday 12:30',home:'Brighton',away:'West Ham',hOdds:1.90,dOdds:3.60,aOdds:4.00,score:null,ht:false,ft:false},
+  {id:6,sport:'football',league:'Premier League',live:false,time:'Sunday 14:00',home:'Brentford',away:'Crystal Palace',hOdds:2.15,dOdds:3.40,aOdds:3.30,score:null,ht:false,ft:false},
+  {id:7,sport:'football',league:'Premier League',live:true,time:'38\'',home:'Wolves',away:'Everton',hOdds:1.95,dOdds:3.50,aOdds:3.80,score:'0-0',ht:false,ft:false},
+  {id:8,sport:'football',league:'Championship',live:true,time:'74\'',home:'Leeds United',away:'Leicester',hOdds:2.20,dOdds:3.40,aOdds:3.20,score:'2-2',ht:false,ft:false},
+  {id:9,sport:'football',league:'Championship',live:false,time:'Tomorrow 19:45',home:'Southampton',away:'Sunderland',hOdds:1.80,dOdds:3.50,aOdds:4.20,score:null,ht:false,ft:false},
+  // ─── FOOTBALL: La Liga ───
+  {id:10,sport:'football',league:'La Liga',live:true,time:'52\'',home:'Real Madrid',away:'Barcelona',hOdds:2.10,dOdds:3.20,aOdds:3.50,score:'1-1',ht:false,ft:false},
+  {id:11,sport:'football',league:'La Liga',live:false,time:'Today 21:00',home:'Atletico Madrid',away:'Sevilla',hOdds:1.75,dOdds:3.60,aOdds:4.80,score:null,ht:false,ft:false},
+  {id:12,sport:'football',league:'La Liga',live:false,time:'Saturday 18:30',home:'Valencia',away:'Villarreal',hOdds:2.60,dOdds:3.30,aOdds:2.70,score:null,ht:false,ft:false},
+  {id:13,sport:'football',league:'La Liga',live:true,time:'11\'',home:'Real Sociedad',away:'Betis',hOdds:2.00,dOdds:3.40,aOdds:3.60,score:'0-0',ht:false,ft:false},
+  // ─── FOOTBALL: Serie A ───
+  {id:14,sport:'football',league:'Serie A',live:false,time:'Tomorrow 20:45',home:'Juventus',away:'AC Milan',hOdds:2.30,dOdds:3.10,aOdds:3.20,score:null,ht:false,ft:false},
+  {id:15,sport:'football',league:'Serie A',live:true,time:'34\'',home:'Inter Milan',away:'Napoli',hOdds:1.90,dOdds:3.50,aOdds:4.00,score:'2-1',ht:false,ft:false},
+  {id:16,sport:'football',league:'Serie A',live:false,time:'Sunday 17:00',home:'Roma',away:'Lazio',hOdds:2.40,dOdds:3.30,aOdds:2.90,score:null,ht:false,ft:false},
+  {id:17,sport:'football',league:'Serie A',live:true,time:'67\'',home:'Atalanta',away:'Fiorentina',hOdds:1.85,dOdds:3.60,aOdds:4.10,score:'1-0',ht:false,ft:false},
+  // ─── FOOTBALL: Bundesliga ───
+  {id:18,sport:'football',league:'Bundesliga',live:true,time:'56\'',home:'Bayern Munich',away:'Dortmund',hOdds:1.60,dOdds:4.20,aOdds:5.00,score:'1-1',ht:false,ft:false},
+  {id:19,sport:'football',league:'Bundesliga',live:false,time:'Saturday 15:30',home:'RB Leipzig',away:'Leverkusen',hOdds:2.20,dOdds:3.50,aOdds:3.10,score:null,ht:false,ft:false},
+  {id:20,sport:'football',league:'Bundesliga',live:false,time:'Sunday 17:30',home:'Eintracht Frankfurt',away:'Wolfsburg',hOdds:1.95,dOdds:3.40,aOdds:3.90,score:null,ht:false,ft:false},
+  // ─── FOOTBALL: Ligue 1 ───
+  {id:21,sport:'football',league:'Ligue 1',live:false,time:'Today 21:00',home:'PSG',away:'Marseille',hOdds:1.45,dOdds:4.50,aOdds:6.50,score:null,ht:false,ft:false},
+  {id:22,sport:'football',league:'Ligue 1',live:true,time:'78\'',home:'Lyon',away:'Monaco',hOdds:2.30,dOdds:3.40,aOdds:3.00,score:'0-2',ht:false,ft:false},
+  {id:23,sport:'football',league:'Ligue 1',live:false,time:'Saturday 20:00',home:'Lens',away:'Lille',hOdds:2.20,dOdds:3.30,aOdds:3.20,score:null,ht:false,ft:false},
+  // ─── FOOTBALL: NPFL ───
+  {id:24,sport:'football',league:'NPFL',live:true,time:'23\'',home:'Enyimba',away:'Kano Pillars',hOdds:1.80,dOdds:3.40,aOdds:4.40,score:'0-0',ht:false,ft:false},
+  {id:25,sport:'football',league:'NPFL',live:false,time:'Tomorrow 16:00',home:'Rangers Int',away:'Shooting Stars',hOdds:1.95,dOdds:3.30,aOdds:3.90,score:null,ht:false,ft:false},
+  {id:26,sport:'football',league:'NPFL',live:false,time:'Sunday 15:00',home:'Remo Stars',away:'Plateau United',hOdds:2.10,dOdds:3.20,aOdds:3.60,score:null,ht:false,ft:false},
+  {id:27,sport:'football',league:'NPFL',live:true,time:'41\'',home:'Lobi Stars',away:'MFM FC',hOdds:1.70,dOdds:3.50,aOdds:4.80,score:'1-0',ht:false,ft:false},
+  // ─── FOOTBALL: Champions League ───
+  {id:28,sport:'football',league:'Champions League',live:false,time:'Wednesday 20:00',home:'Man City',away:'Real Madrid',hOdds:1.95,dOdds:3.60,aOdds:3.80,score:null,ht:false,ft:false},
+  {id:29,sport:'football',league:'Champions League',live:true,time:'67\'',home:'Bayern Munich',away:'Arsenal',hOdds:1.85,dOdds:3.70,aOdds:4.20,score:'2-0',ht:false,ft:false},
+  {id:30,sport:'football',league:'Champions League',live:false,time:'Wednesday 20:00',home:'PSG',away:'Barcelona',hOdds:2.30,dOdds:3.20,aOdds:2.90,score:null,ht:false,ft:false},
+  {id:31,sport:'football',league:'Europa League',live:false,time:'Thursday 18:45',home:'Liverpool',away:'Leverkusen',hOdds:1.70,dOdds:3.90,aOdds:4.80,score:null,ht:false,ft:false},
+  {id:32,sport:'football',league:'AFCON Qualifiers',live:true,time:'45\'',home:'Nigeria',away:'Ghana',hOdds:1.90,dOdds:3.40,aOdds:4.20,score:'1-1',ht:false,ft:false},
+  {id:33,sport:'football',league:'AFCON Qualifiers',live:false,time:'Tuesday 19:00',home:'Cameroon',away:'Senegal',hOdds:2.60,dOdds:3.10,aOdds:2.80,score:null,ht:false,ft:false},
+  {id:34,sport:'football',league:'World Cup Qualifiers',live:false,time:'Saturday 20:00',home:'Brazil',away:'Argentina',hOdds:2.10,dOdds:3.20,aOdds:3.40,score:null,ht:false,ft:false},
+  {id:35,sport:'football',league:'World Cup Qualifiers',live:false,time:'Sunday 21:00',home:'France',away:'Germany',hOdds:2.20,dOdds:3.30,aOdds:3.10,score:null,ht:false,ft:false},
+
+  // ─── BASKETBALL: NBA ───
+  {id:36,sport:'basketball',league:'NBA',live:true,time:'Q3 4:22',home:'Lakers',away:'Warriors',hOdds:1.65,dOdds:null,aOdds:2.25,score:'78-82',ht:false,ft:false},
+  {id:37,sport:'basketball',league:'NBA',live:false,time:'Today 01:00',home:'Celtics',away:'Heat',hOdds:1.45,dOdds:null,aOdds:2.80,score:null,ht:false,ft:false},
+  {id:38,sport:'basketball',league:'NBA',live:false,time:'Tomorrow 00:30',home:'Nets',away:'Bucks',hOdds:2.10,dOdds:null,aOdds:1.75,score:null,ht:false,ft:false},
+  {id:39,sport:'basketball',league:'NBA',live:true,time:'Q4 1:48',home:'Suns',away:'Nuggets',hOdds:1.90,dOdds:null,aOdds:1.90,score:'98-102',ht:false,ft:false},
+  {id:40,sport:'basketball',league:'NBA',live:false,time:'Saturday 23:00',home:'76ers',away:'Knicks',hOdds:1.55,dOdds:null,aOdds:2.50,score:null,ht:false,ft:false},
+  {id:41,sport:'basketball',league:'NBA',live:true,time:'Q2 7:11',home:'Clippers',away:'Mavericks',hOdds:2.00,dOdds:null,aOdds:1.85,score:'51-48',ht:false,ft:false},
+  {id:42,sport:'basketball',league:'NBA',live:false,time:'Today 02:30',home:'Spurs',away:'Thunder',hOdds:2.60,dOdds:null,aOdds:1.55,score:null,ht:false,ft:false},
+  {id:43,sport:'basketball',league:'NBA',live:false,time:'Tomorrow 01:00',home:'Raptors',away:'Bulls',hOdds:1.80,dOdds:null,aOdds:2.05,score:null,ht:false,ft:false},
+  {id:44,sport:'basketball',league:'NBA',live:true,time:'Q1 9:55',home:'Jazz',away:'Grizzlies',hOdds:2.30,dOdds:null,aOdds:1.65,score:'12-14',ht:false,ft:false},
+  {id:45,sport:'basketball',league:'NBA',live:false,time:'Sunday 00:00',home:'Hornets',away:'Pistons',hOdds:1.70,dOdds:null,aOdds:2.20,score:null,ht:false,ft:false},
+  {id:46,sport:'basketball',league:'EuroLeague',live:true,time:'Q2 4:20',home:'Real Madrid',away:'Fenerbahce',hOdds:1.75,dOdds:null,aOdds:2.10,score:'38-42',ht:false,ft:false},
+  {id:47,sport:'basketball',league:'EuroLeague',live:false,time:'Tomorrow 19:00',home:'Olympiacos',away:'CSKA Moscow',hOdds:1.85,dOdds:null,aOdds:2.00,score:null,ht:false,ft:false},
+  {id:48,sport:'basketball',league:'EuroLeague',live:false,time:'Thursday 20:00',home:'Barcelona',away:'Panathinaikos',hOdds:1.90,dOdds:null,aOdds:1.95,score:null,ht:false,ft:false},
+  {id:49,sport:'basketball',league:'WNBA',live:true,time:'Q3 2:15',home:'Las Vegas Aces',away:'NY Liberty',hOdds:1.80,dOdds:null,aOdds:2.05,score:'62-59',ht:false,ft:false},
+  {id:50,sport:'basketball',league:'WNBA',live:false,time:'Today 22:30',home:'Seattle Storm',away:'Chicago Sky',hOdds:1.65,dOdds:null,aOdds:2.30,score:null,ht:false,ft:false},
+  {id:51,sport:'basketball',league:'NBL Nigeria',live:false,time:'Saturday 16:00',home:'Rivers Hoopers',away:'Kano Pillars',hOdds:1.70,dOdds:null,aOdds:2.20,score:null,ht:false,ft:false},
+
+  // ─── TENNIS ───
+  {id:52,sport:'tennis',league:'Wimbledon',live:true,time:'Set 3 4-3',home:'Alcaraz',away:'Djokovic',hOdds:1.45,dOdds:null,aOdds:2.80,score:'1-1',ht:false,ft:false},
+  {id:53,sport:'tennis',league:'Wimbledon',live:false,time:'Tomorrow 13:00',home:'Sinner',away:'Medvedev',hOdds:1.65,dOdds:null,aOdds:2.30,score:null,ht:false,ft:false},
+  {id:54,sport:'tennis',league:'French Open',live:true,time:'Set 2 5-4',home:'Nadal',away:'Zverev',hOdds:1.80,dOdds:null,aOdds:2.10,score:'1-0',ht:false,ft:false},
+  {id:55,sport:'tennis',league:'US Open',live:false,time:'Monday 20:00',home:'Swiatek',away:'Sabalenka',hOdds:1.55,dOdds:null,aOdds:2.50,score:null,ht:false,ft:false},
+  {id:56,sport:'tennis',league:'Australian Open',live:true,time:'Set 4 3-2',home:'Rublev',away:'Tsitsipas',hOdds:1.90,dOdds:null,aOdds:1.95,score:'2-1',ht:false,ft:false},
+  {id:57,sport:'tennis',league:'ATP Masters 1000',live:false,time:'Today 15:00',home:'Rune',away:'Fritz',hOdds:2.10,dOdds:null,aOdds:1.75,score:null,ht:false,ft:false},
+  {id:58,sport:'tennis',league:'ATP Masters 1000',live:false,time:'Tomorrow 11:00',home:'Hurkacz',away:'Ruud',hOdds:1.95,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+  {id:59,sport:'tennis',league:'WTA Tour',live:true,time:'Set 1 6-5',home:'Gauff',away:'Rybakina',hOdds:1.70,dOdds:null,aOdds:2.20,score:'0-0',ht:false,ft:false},
+  {id:60,sport:'tennis',league:'WTA Tour',live:false,time:'Saturday 14:00',home:'Pegula',away:'Vondrousova',hOdds:1.85,dOdds:null,aOdds:2.00,score:null,ht:false,ft:false},
+
+  // ─── CRICKET ───
+  {id:61,sport:'cricket',league:'IPL',live:true,time:'15.2 ov',home:'Mumbai Indians',away:'Chennai Super Kings',hOdds:1.90,dOdds:null,aOdds:1.95,score:'156/3',ht:false,ft:false},
+  {id:62,sport:'cricket',league:'IPL',live:false,time:'Tomorrow 16:00',home:'RCB',away:'KKR',hOdds:1.85,dOdds:null,aOdds:2.00,score:null,ht:false,ft:false},
+  {id:63,sport:'cricket',league:'IPL',live:true,time:'8.4 ov',home:'Delhi Capitals',away:'Rajasthan Royals',hOdds:2.10,dOdds:null,aOdds:1.75,score:'72/2',ht:false,ft:false},
+  {id:64,sport:'cricket',league:'IPL',live:false,time:'Sunday 16:00',home:'Punjab Kings',away:'Sunrisers Hyd',hOdds:1.95,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+  {id:65,sport:'cricket',league:'Big Bash',live:true,time:'12.4 ov',home:'Sydney Sixers',away:'Melbourne Stars',hOdds:1.75,dOdds:null,aOdds:2.15,score:'98/2',ht:false,ft:false},
+  {id:66,sport:'cricket',league:'Big Bash',live:false,time:'Tomorrow 10:00',home:'Perth Scorchers',away:'Brisbane Heat',hOdds:1.80,dOdds:null,aOdds:2.05,score:null,ht:false,ft:false},
+  {id:67,sport:'cricket',league:'The Ashes',live:false,time:'Thursday 11:00',home:'England',away:'Australia',hOdds:2.20,dOdds:null,aOdds:1.70,score:null,ht:false,ft:false},
+  {id:68,sport:'cricket',league:'ICC World Cup',live:false,time:'Saturday 09:30',home:'India',away:'Pakistan',hOdds:1.65,dOdds:null,aOdds:2.30,score:null,ht:false,ft:false},
+  {id:69,sport:'cricket',league:'ICC World Cup',live:true,time:'38.1 ov',home:'South Africa',away:'New Zealand',hOdds:1.80,dOdds:null,aOdds:2.05,score:'198/4',ht:false,ft:false},
+  {id:70,sport:'cricket',league:'PSL',live:false,time:'Saturday 14:00',home:'Karachi Kings',away:'Lahore Qalandars',hOdds:1.90,dOdds:null,aOdds:1.95,score:null,ht:false,ft:false},
+
+  // ─── RUGBY ───
+  {id:71,sport:'rugby',league:'Six Nations',live:false,time:'Saturday 16:00',home:'Ireland',away:'France',hOdds:1.95,dOdds:3.50,aOdds:3.80,score:null,ht:false,ft:false},
+  {id:72,sport:'rugby',league:'Six Nations',live:true,time:'52\'',home:'England',away:'Wales',hOdds:1.70,dOdds:4.00,aOdds:4.50,score:'15-10',ht:false,ft:false},
+  {id:73,sport:'rugby',league:'Rugby World Cup',live:false,time:'Friday 20:00',home:'New Zealand',away:'South Africa',hOdds:1.60,dOdds:4.50,aOdds:5.20,score:null,ht:false,ft:false},
+  {id:74,sport:'rugby',league:'Premiership Rugby',live:true,time:'34\'',home:'Leicester Tigers',away:'Saracens',hOdds:2.20,dOdds:3.40,aOdds:3.20,score:'7-12',ht:false,ft:false},
+  {id:75,sport:'rugby',league:'United Rugby Championship',live:false,time:'Saturday 19:35',home:'Munster',away:'Leinster',hOdds:2.40,dOdds:3.60,aOdds:2.80,score:null,ht:false,ft:false},
+  {id:76,sport:'rugby',league:'Super Rugby',live:true,time:'61\'',home:'Blues',away:'Chiefs',hOdds:1.85,dOdds:3.80,aOdds:4.00,score:'20-17',ht:false,ft:false},
+
+  // ─── ESPORTS ───
+  {id:77,sport:'esports',league:'CS2 Major',live:true,time:'Map 2 11-9',home:'NAVI',away:'FaZe',hOdds:1.75,dOdds:null,aOdds:2.05,score:'1-0',ht:false,ft:false},
+  {id:78,sport:'esports',league:'CS2 Major',live:false,time:'Today 18:00',home:'G2',away:'Vitality',hOdds:1.90,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+  {id:79,sport:'esports',league:'LoL Worlds',live:false,time:'Tomorrow 14:00',home:'T1',away:'Gen.G',hOdds:1.65,dOdds:null,aOdds:2.30,score:null,ht:false,ft:false},
+  {id:80,sport:'esports',league:'LoL Worlds',live:true,time:'Game 2 25min',home:'JDG',away:'BLG',hOdds:1.80,dOdds:null,aOdds:2.05,score:'1-0',ht:false,ft:false},
+  {id:81,sport:'esports',league:'Dota 2 TI',live:true,time:'Game 3',home:'Team Spirit',away:'PSG.LGD',hOdds:1.80,dOdds:null,aOdds:2.05,score:'1-1',ht:false,ft:false},
+  {id:82,sport:'esports',league:'Valorant Champions',live:false,time:'Saturday 19:00',home:'Sentinels',away:'Fnatic',hOdds:1.70,dOdds:null,aOdds:2.20,score:null,ht:false,ft:false},
+  {id:83,sport:'esports',league:'Call of Duty League',live:true,time:'Map 3',home:'Atlanta FaZe',away:'OpTic Texas',hOdds:1.85,dOdds:null,aOdds:2.00,score:'1-1',ht:false,ft:false},
+  {id:84,sport:'esports',league:'Overwatch League',live:false,time:'Sunday 20:00',home:'SF Shock',away:'Seoul Dynasty',hOdds:1.95,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+
+  // ─── BASEBALL: MLB ───
+  {id:85,sport:'baseball',league:'MLB',live:true,time:'Bot 6th',home:'NY Yankees',away:'LA Dodgers',hOdds:1.85,dOdds:null,aOdds:2.00,score:'4-3',ht:false,ft:false},
+  {id:86,sport:'baseball',league:'MLB',live:false,time:'Today 23:05',home:'Boston Red Sox',away:'Houston Astros',hOdds:2.10,dOdds:null,aOdds:1.75,score:null,ht:false,ft:false},
+  {id:87,sport:'baseball',league:'MLB',live:true,time:'Top 3rd',home:'Chicago Cubs',away:'Atlanta Braves',hOdds:1.95,dOdds:null,aOdds:1.90,score:'1-2',ht:false,ft:false},
+  {id:88,sport:'baseball',league:'MLB',live:false,time:'Tomorrow 00:10',home:'SF Giants',away:'St Louis Cardinals',hOdds:2.20,dOdds:null,aOdds:1.70,score:null,ht:false,ft:false},
+  {id:89,sport:'baseball',league:'MLB',live:false,time:'Saturday 18:15',home:'Toronto Blue Jays',away:'NY Mets',hOdds:1.75,dOdds:null,aOdds:2.10,score:null,ht:false,ft:false},
+  {id:90,sport:'baseball',league:'MLB',live:true,time:'Top 8th',home:'Texas Rangers',away:'Seattle Mariners',hOdds:2.00,dOdds:null,aOdds:1.85,score:'5-5',ht:false,ft:false},
+  {id:91,sport:'baseball',league:'MLB',live:false,time:'Today 22:40',home:'Cleveland Guardians',away:'Minnesota Twins',hOdds:1.90,dOdds:null,aOdds:1.95,score:null,ht:false,ft:false},
+
+  // ─── MMA / BOXING ───
+  {id:92,sport:'mma',league:'UFC',live:false,time:'Saturday 04:00',home:'Jon Jones',away:'Stipe Miocic',hOdds:1.55,dOdds:null,aOdds:2.55,score:null,ht:false,ft:false},
+  {id:93,sport:'mma',league:'UFC',live:false,time:'Saturday 02:00',home:'Alex Pereira',away:'Jiri Prochazka',hOdds:1.75,dOdds:null,aOdds:2.10,score:null,ht:false,ft:false},
+  {id:94,sport:'mma',league:'UFC',live:false,time:'Saturday 01:00',home:'Sean O\'Malley',away:'Merab Dvalishvili',hOdds:2.30,dOdds:null,aOdds:1.65,score:null,ht:false,ft:false},
+  {id:95,sport:'boxing',league:'WBC Heavyweight',live:false,time:'Sunday 03:00',home:'Tyson Fury',away:'Anthony Joshua',hOdds:1.60,dOdds:null,aOdds:2.40,score:null,ht:false,ft:false},
+  {id:96,sport:'boxing',league:'WBO Middleweight',live:false,time:'Saturday 22:00',home:'Canelo Alvarez',away:'Jermall Charlo',hOdds:1.35,dOdds:null,aOdds:3.20,score:null,ht:false,ft:false},
+  {id:97,sport:'mma',league:'Bellator',live:false,time:'Friday 22:00',home:'Ryan Bader',away:'Fedor Emelianenko',hOdds:1.90,dOdds:null,aOdds:1.95,score:null,ht:false,ft:false},
+
+  // ─── GOLF ───
+  {id:98,sport:'golf',league:'The Masters',live:true,time:'Round 3',home:'Scottie Scheffler',away:'Rory McIlroy',hOdds:1.70,dOdds:null,aOdds:2.20,score:'-12 / -9',ht:false,ft:false},
+  {id:99,sport:'golf',league:'The Masters',live:false,time:'Sunday 14:00',home:'Jon Rahm',away:'Brooks Koepka',hOdds:1.85,dOdds:null,aOdds:2.00,score:null,ht:false,ft:false},
+  {id:100,sport:'golf',league:'US Open',live:false,time:'Saturday 13:00',home:'Viktor Hovland',away:'Xander Schauffele',hOdds:1.95,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+
+  // ─── ICE HOCKEY: NHL ───
+  {id:101,sport:'hockey',league:'NHL',live:true,time:'P2 08:44',home:'Toronto Maple Leafs',away:'Montreal Canadiens',hOdds:1.75,dOdds:3.50,aOdds:4.00,score:'2-1',ht:false,ft:false},
+  {id:102,sport:'hockey',league:'NHL',live:false,time:'Today 01:00',home:'Boston Bruins',away:'NY Rangers',hOdds:1.90,dOdds:3.40,aOdds:3.80,score:null,ht:false,ft:false},
+  {id:103,sport:'hockey',league:'NHL',live:true,time:'P3 04:12',home:'Vegas Golden Knights',away:'Colorado Avalanche',hOdds:2.00,dOdds:3.50,aOdds:3.60,score:'3-3',ht:false,ft:false},
+  {id:104,sport:'hockey',league:'NHL',live:false,time:'Tomorrow 00:30',home:'Chicago Blackhawks',away:'Detroit Red Wings',hOdds:2.30,dOdds:3.30,aOdds:2.90,score:null,ht:false,ft:false},
+  {id:105,sport:'hockey',league:'NHL',live:false,time:'Saturday 23:00',home:'Pittsburgh Penguins',away:'Washington Capitals',hOdds:1.85,dOdds:3.60,aOdds:3.90,score:null,ht:false,ft:false},
+  {id:106,sport:'hockey',league:'KHL',live:true,time:'P2 15:20',home:'CSKA Moscow',away:'SKA St. Petersburg',hOdds:2.10,dOdds:3.40,aOdds:3.20,score:'1-2',ht:false,ft:false},
+
+  // ─── VOLLEYBALL ───
+  {id:107,sport:'volleyball',league:'FIVB World League',live:true,time:'Set 3 18-20',home:'Brazil',away:'Poland',hOdds:1.65,dOdds:null,aOdds:2.30,score:'1-1',ht:false,ft:false},
+  {id:108,sport:'volleyball',league:'FIVB World League',live:false,time:'Tomorrow 17:00',home:'Russia',away:'Italy',hOdds:1.90,dOdds:null,aOdds:1.95,score:null,ht:false,ft:false},
+  {id:109,sport:'volleyball',league:'Super Liga',live:false,time:'Saturday 18:00',home:'Zenit Kazan',away:'Lokomotiv',hOdds:1.70,dOdds:null,aOdds:2.20,score:null,ht:false,ft:false},
+
+  // ─── HANDBALL ───
+  {id:110,sport:'handball',league:'EHF Champions League',live:true,time:'47\'',home:'Kiel',away:'Barcelona',hOdds:2.20,dOdds:3.50,aOdds:2.80,score:'18-20',ht:false,ft:false},
+  {id:111,sport:'handball',league:'EHF Champions League',live:false,time:'Sunday 18:00',home:'Paris Saint-Germain',away:'Veszprém',hOdds:1.80,dOdds:3.60,aOdds:3.80,score:null,ht:false,ft:false},
+
+  // ─── TABLE TENNIS ───
+  {id:112,sport:'tabletennis',league:'ITTF World Tour',live:true,time:'Set 4 8-7',home:'Ma Long',away:'Fan Zhendong',hOdds:1.85,dOdds:null,aOdds:2.00,score:'2-1',ht:false,ft:false},
+  {id:113,sport:'tabletennis',league:'ITTF World Tour',live:false,time:'Today 13:00',home:'Harimoto',away:'Ovtcharov',hOdds:1.95,dOdds:null,aOdds:1.90,score:null,ht:false,ft:false},
+
+  // ─── SNOOKER ───
+  {id:114,sport:'snooker',league:'World Snooker Championship',live:true,time:'Frame 19',home:'Ronnie O\'Sullivan',away:'Mark Selby',hOdds:1.55,dOdds:null,aOdds:2.50,score:'10-9',ht:false,ft:false},
+  {id:115,sport:'snooker',league:'UK Championship',live:false,time:'Tomorrow 13:00',home:'Judd Trump',away:'Neil Robertson',hOdds:1.70,dOdds:null,aOdds:2.20,score:null,ht:false,ft:false},
+
+  // ─── DARTS ───
+  {id:116,sport:'darts',league:'PDC World Darts Championship',live:true,time:'Set 4 Leg 2',home:'Michael van Gerwen',away:'Peter Wright',hOdds:1.60,dOdds:null,aOdds:2.40,score:'3-0',ht:false,ft:false},
+  {id:117,sport:'darts',league:'Premier League Darts',live:false,time:'Thursday 19:00',home:'Gerwyn Price',away:'Jose de Sousa',hOdds:1.75,dOdds:null,aOdds:2.10,score:null,ht:false,ft:false},
+
+  // ─── CYCLING ───
+  {id:118,sport:'cycling',league:'Tour de France',live:true,time:'Stage 14 km 160',home:'Tadej Pogacar',away:'Jonas Vingegaard',hOdds:1.65,dOdds:null,aOdds:2.30,score:null,ht:false,ft:false},
+  {id:119,sport:'cycling',league:'Giro d\'Italia',live:false,time:'Tomorrow 11:00',home:'Remco Evenepoel',away:'Primož Roglič',hOdds:1.80,dOdds:null,aOdds:2.05,score:null,ht:false,ft:false},
+
+  // ─── ATHLETICS ───
+  {id:120,sport:'athletics',league:'World Athletics Championship',live:false,time:'Today 20:00',home:'Usain Bolt',away:'Fred Kerley',hOdds:1.45,dOdds:null,aOdds:2.80,score:null,ht:false,ft:false},
+  {id:121,sport:'athletics',league:'Diamond League',live:false,time:'Saturday 19:30',home:'Mondo Duplantis',away:'Sam Kendricks',hOdds:1.55,dOdds:null,aOdds:2.55,score:null,ht:false,ft:false},
+
+  // ─── SWIMMING ───
+  {id:122,sport:'swimming',league:'FINA World Championship',live:false,time:'Today 18:00',home:'Caeleb Dressel',away:'Kyle Chalmers',hOdds:1.50,dOdds:null,aOdds:2.65,score:null,ht:false,ft:false},
+
+  // ─── BOXING ───
+  {id:123,sport:'boxing',league:'WBA Super Welterweight',live:false,time:'Saturday 00:00',home:'Errol Spence Jr.',away:'Terence Crawford',hOdds:1.85,dOdds:null,aOdds:2.00,score:null,ht:false,ft:false},
 ];
 // Add after your matchesData array
 function generateMoreMatches() {
@@ -1972,15 +2466,12 @@ function initAviator() {}
 
 function toggleAviator() {
   const sec = document.getElementById('aviatorSection');
-  const main = document.getElementById('mainContent');
- 
   if(sec.classList.contains('open')) {
-    sec.classList.remove('open');
-    main.style.display = 'block';
-    stopAviator();
+    showSection('main');
   } else {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('gamesSection').classList.remove('open');
     sec.classList.add('open');
-    main.style.display = 'none';
     startAviator();
   }
 }
@@ -2207,41 +2698,505 @@ function updateHistory() {
   }).join('');
 }
 
-// VIRTUAL SPORTS
-function toggleVirtual() {
-  const sec = document.getElementById('vsec');
-  sec.classList.toggle('open');
-  if(sec.classList.contains('open')) renderVirtual();
+// VIRTUAL SPORTS ENGINE
+const virtualSports = [
+  {id:'vf1',type:'Football',icon:'⚽',league:'Virtual Premier League',home:'Virtual United',away:'Virtual City',homeColor:'#1D6FA4',awayColor:'#E01E37'},
+  {id:'vf2',type:'Football',icon:'⚽',league:'Virtual La Liga',home:'Virtual Madrid',away:'Virtual Barca',homeColor:'#FFFFFF',awayColor:'#A50021'},
+  {id:'vb1',type:'Basketball',icon:'🏀',league:'Virtual NBA',home:'Virtual Lakers',away:'Virtual Bulls',homeColor:'#552582',awayColor:'#CE1141'},
+  {id:'vt1',type:'Tennis',icon:'🎾',league:'Virtual Wimbledon',home:'V. Anderson',away:'V. Martinez',homeColor:'#2E8B57',awayColor:'#B22222'},
+  {id:'vc1',type:'Cricket',icon:'🏏',league:'Virtual IPL',home:'Virtual Mumbai',away:'Virtual Chennai',homeColor:'#004BA0',awayColor:'#FDB913'},
+  {id:'vr1',type:'Racing',icon:'🏎️',league:'Virtual F1 GP',home:'V. Hamilton',away:'V. Verstappen',homeColor:'#00D2BE',awayColor:'#0600EF'},
+];
+
+let virtualStates = {};
+
+function initVirtualSports() {
+  virtualSports.forEach(vs => {
+    virtualStates[vs.id] = {
+      status: 'countdown', // countdown, live, ft
+      countdown: Math.floor(Math.random()*60)+10,
+      homeScore: 0,
+      awayScore: 0,
+      minute: 0,
+      maxMinute: vs.type === 'Football' ? 90 : vs.type === 'Basketball' ? 48 : vs.type === 'Tennis' ? 5 : 20,
+      bets: {},
+      result: null,
+      interval: null
+    };
+    tickVirtual(vs.id);
+  });
+  setInterval(renderVirtual, 1000);
+}
+
+function tickVirtual(vsId) {
+  const vs = virtualSports.find(v => v.id === vsId);
+  const st = virtualStates[vsId];
+  if (!vs || !st) return;
+
+  if (st.status === 'countdown') {
+    st.countdown--;
+    if (st.countdown <= 0) {
+      st.status = 'live';
+      st.minute = 0;
+      st.homeScore = 0;
+      st.awayScore = 0;
+    }
+    setTimeout(() => tickVirtual(vsId), 1000);
+  } else if (st.status === 'live') {
+    st.minute++;
+    if (Math.random() < 0.08) {
+      if (Math.random() < 0.5) st.homeScore++;
+      else st.awayScore++;
+    }
+    if (st.minute >= st.maxMinute) {
+      st.status = 'ft';
+      st.result = st.homeScore > st.awayScore ? '1' : st.homeScore < st.awayScore ? '2' : 'X';
+      settleVirtualBets(vsId);
+      setTimeout(() => {
+        virtualStates[vsId] = {
+          status: 'countdown',
+          countdown: Math.floor(Math.random()*45)+15,
+          homeScore:0, awayScore:0, minute:0,
+          maxMinute: st.maxMinute,
+          bets: {}, result: null, interval: null
+        };
+        tickVirtual(vsId);
+      }, 8000);
+    } else {
+      setTimeout(() => tickVirtual(vsId), 800);
+    }
+  }
+}
+
+function settleVirtualBets(vsId) {
+  const st = virtualStates[vsId];
+  const vs = virtualSports.find(v => v.id === vsId);
+  Object.entries(st.bets).forEach(([sel, betObj]) => {
+    if (sel === st.result) {
+      const profit = betObj.amount * betObj.odds;
+      balance += profit;
+      localStorage.setItem('tb_balance', balance);
+      updateUI();
+      showToast('Virtual Win! 🎉', `+₦${profit.toLocaleString()} — ${vs.home} vs ${vs.away}`, 'success');
+      addWinFeedItem(user ? user.name : 'Player', profit, vs.type);
+    }
+  });
+}
+
+function placeVirtualBet(vsId, sel, odds) {
+  if (!user) { openModal('loginModal'); return; }
+  const st = virtualStates[vsId];
+  if (st.status === 'ft') { showToast('Match Ended', 'Wait for next round', 'error'); return; }
+  const input = document.getElementById(`vbet-${vsId}`);
+  const amount = parseFloat(input?.value) || 500;
+  if (amount < 100) { showToast('Min Bet', '₦100 minimum', 'error'); return; }
+  if (amount > balance) { showToast('Insufficient', 'Not enough balance', 'error'); return; }
+  balance -= amount;
+  localStorage.setItem('tb_balance', balance);
+  updateUI();
+  st.bets[sel] = { amount, odds };
+  showToast('Virtual Bet Placed!', `₦${amount.toLocaleString()} on ${sel === '1' ? 'Home' : sel === '2' ? 'Away' : 'Draw'} @ ${odds}x`);
+  renderVirtual();
 }
 
 function renderVirtual() {
   const container = document.getElementById('vmatches');
-  const virtualMatches = [
-    {t: 'V-Football', h: 'Virtual United', a: 'Virtual City', time: '2 min'},
-    {t: 'V-Horse Racing', h: 'Thunder Bolt', a: '5 others', time: '5 min'},
-    {t: 'V-Dogs', h: 'Rapid Runner', a: '7 others', time: '8 min'}
-  ];
- 
-  container.innerHTML = virtualMatches.map((m, i) => `
+  if (!container) return;
+  container.innerHTML = virtualSports.map(vs => {
+    const st = virtualStates[vs.id];
+    if (!st) return '';
+    const isLive = st.status === 'live';
+    const isFT = st.status === 'ft';
+    const isCounting = st.status === 'countdown';
+    const progress = isLive ? (st.minute / st.maxMinute * 100) : isFT ? 100 : 0;
+    const hOdds = (1.5 + Math.random()*.8).toFixed(2);
+    const dOdds = (3.0 + Math.random()*1).toFixed(2);
+    const aOdds = (1.8 + Math.random()*.9).toFixed(2);
+    const hasBet = st.bets && Object.keys(st.bets).length > 0;
+    return `
     <div class="vm">
-      <span class="vt">LIVE</span>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <span style="font-size:.75rem;color:var(--g);font-weight:600">${m.t}</span>
-        <span style="font-size:.7rem;color:var(--t3)">Next: ${m.time}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem">
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <span style="font-size:.85rem">${vs.icon}</span>
+          <span style="font-size:.65rem;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase">${vs.league}</span>
+        </div>
+        ${isFT ? `<span class="vt-upcoming">FT</span>` : isLive ? `<span class="vt"><span style="width:5px;height:5px;background:#fff;border-radius:50%;display:inline-block"></span> LIVE ${st.minute}'</span>` : `<span class="vt-upcoming">⏱ ${st.countdown}s</span>`}
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="tm"><div class="tb" style="width:30px;height:30px;font-size:.6rem">${m.h[0]}</div><span class="tn" style="font-size:.8rem">${m.h}</span></div>
-        <div class="vs">VS</div>
-        <div class="tm aw"><div class="tb" style="width:30px;height:30px;font-size:.6rem">${m.a[0]}</div><span class="tn" style="font-size:.8rem">${m.a}</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.55rem">
+        <div style="flex:1;text-align:center">
+          <div style="width:32px;height:32px;background:${vs.homeColor};border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;margin-bottom:.2rem">${vs.home.substring(0,2).toUpperCase()}</div>
+          <div style="font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${vs.home}</div>
+        </div>
+        ${isLive || isFT ? `<div class="v-score-box">${st.homeScore} - ${st.awayScore}</div>` : `<div style="font-size:.72rem;color:var(--t3);font-weight:700">VS</div>`}
+        <div style="flex:1;text-align:center">
+          <div style="width:32px;height:32px;background:${vs.awayColor};border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;margin-bottom:.2rem">${vs.away.substring(0,2).toUpperCase()}</div>
+          <div style="font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${vs.away}</div>
+        </div>
       </div>
-      <div class="or" style="margin-top:.5rem">
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">W1</div><div class="ov">2.10</div></div>
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">X</div><div class="ov">3.40</div></div>
-        <div class="op" onclick="showToast('Virtual Bet', 'Bet placed on virtual match')"><div class="ol">W2</div><div class="ov">2.85</div></div>
+      ${!isFT ? `
+      <div class="v-odds-row">
+        <div class="v-odd ${st.bets?.['1'] ? 'selected' : ''} ${isFT ? 'locked' : ''}" onclick="placeVirtualBet('${vs.id}','1',${hOdds})">
+          <div class="v-odd-lbl">1</div><div class="v-odd-val">${hOdds}</div>
+        </div>
+        <div class="v-odd ${st.bets?.['X'] ? 'selected' : ''} ${isFT ? 'locked' : ''}" onclick="placeVirtualBet('${vs.id}','X',${dOdds})">
+          <div class="v-odd-lbl">X</div><div class="v-odd-val">${dOdds}</div>
+        </div>
+        <div class="v-odd ${st.bets?.['2'] ? 'selected' : ''} ${isFT ? 'locked' : ''}" onclick="placeVirtualBet('${vs.id}','2',${aOdds})">
+          <div class="v-odd-lbl">2</div><div class="v-odd-val">${aOdds}</div>
+        </div>
       </div>
-    </div>
-  `).join('');
+      <input class="v-bet-input" id="vbet-${vs.id}" type="number" value="500" min="100" placeholder="Bet amount ₦">
+      ` : `<div style="text-align:center;padding:.4rem;font-size:.8rem;color:var(--t2)">Next round starting soon...</div>`}
+      <div class="v-timer-bar"><div class="v-timer-fill" style="width:${progress}%"></div></div>
+    </div>`;
+  }).join('');
 }
+
+function toggleVirtual() {
+  const sec = document.getElementById('vsec');
+  sec.classList.toggle('open');
+  if (sec.classList.contains('open')) {
+    renderVirtual();
+    if (!virtualStates['vf1']) initVirtualSports();
+  }
+}
+
+// SECTION SWITCHING
+function showSection(sec) {
+  const mainContent = document.getElementById('mainContent');
+  const gamesSection = document.getElementById('gamesSection');
+  const aviatorSection = document.getElementById('aviatorSection');
+  mainContent.style.display = 'none';
+  gamesSection.classList.remove('open');
+  aviatorSection.classList.remove('open');
+  stopAviator();
+  if (sec === 'main') { mainContent.style.display = 'block'; }
+  else if (sec === 'games') { gamesSection.classList.add('open'); }
+}
+
+// GAMES LOGIC
+let diceChoice = null;
+let coinChoice = null;
+let colorChoice = null;
+let colorChoiceMult = 0;
+let pkState = {active:false,round:0,scored:0,conceded:0,bet:0};
+let minesState = {active:false,grid:[],revealed:0,mines:[],bet:0,gemsFound:0};
+
+function openGame(id) {
+  document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('open'));
+  document.getElementById('game-'+id)?.classList.add('open');
+  document.getElementById('game-'+id)?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closeGame(id) {
+  document.getElementById('game-'+id)?.classList.remove('open');
+}
+function setGameBet(inputId, amount) {
+  document.getElementById(inputId).value = amount;
+  if (inputId === 'diceBet') updateDiceWin();
+  if (inputId === 'coinBet') updateCoinWin();
+  if (inputId === 'colorBet') updateColorWin();
+}
+function requireLogin() {
+  if (!user) { openModal('loginModal'); return false; }
+  return true;
+}
+
+// DICE
+function selectDice(n) {
+  diceChoice = n;
+  document.querySelectorAll('.dice-btn').forEach((b,i) => b.classList.toggle('sel', i===n-1));
+  updateDiceWin();
+}
+function updateDiceWin() {
+  const bet = parseFloat(document.getElementById('diceBet').value)||0;
+  document.getElementById('diceWinAmt').textContent = '₦'+(bet*6*.97).toLocaleString('en-NG',{maximumFractionDigits:0});
+}
+function playDice() {
+  if (!requireLogin()) return;
+  if (!diceChoice) { showToast('Pick a number!','Select 1–6 first','error'); return; }
+  const bet = parseFloat(document.getElementById('diceBet').value)||0;
+  if (bet < 100) { showToast('Min ₦100','Increase your bet','error'); return; }
+  if (bet > balance) { showToast('Low balance','Deposit more','error'); return; }
+  balance -= bet; localStorage.setItem('tb_balance', balance); updateUI();
+  document.getElementById('diceRollBtn').disabled = true;
+  const face = document.getElementById('diceResult');
+  const diceEmoji = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣'];
+  face.classList.add('dice-rolling');
+  let ticks = 0;
+  const spin = setInterval(() => {
+    face.textContent = diceEmoji[Math.floor(Math.random()*6)];
+    if (++ticks > 10) clearInterval(spin);
+  }, 80);
+  setTimeout(() => {
+    face.classList.remove('dice-rolling');
+    const roll = Math.ceil(Math.random()*6);
+    face.textContent = diceEmoji[roll-1];
+    const won = roll === diceChoice;
+    const msg = document.getElementById('diceMsg');
+    const hist = document.getElementById('diceHistory');
+    if (won) {
+      const win = bet*6*.97;
+      balance += win; localStorage.setItem('tb_balance', balance); updateUI();
+      msg.innerHTML = `<span style="color:var(--green);font-weight:700">🎉 You rolled ${roll}! +₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>`;
+      hist.innerHTML = `<span class="gp-hist-win">+₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>` + hist.innerHTML;
+      addWinFeedItem(user.name, win, 'Dice');
+    } else {
+      msg.innerHTML = `<span style="color:var(--red);font-weight:700">Rolled ${roll}, you picked ${diceChoice}. Try again!</span>`;
+      hist.innerHTML = `<span class="gp-hist-loss">-₦${bet.toLocaleString()}</span>` + hist.innerHTML;
+    }
+    document.getElementById('diceRollBtn').disabled = false;
+  }, 900);
+}
+
+// COIN FLIP
+function selectCoin(choice) {
+  coinChoice = choice;
+  document.querySelectorAll('.coin-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelector(`.coin-btn.${choice === 'heads' ? 'head' : 'tail'}`).classList.add('sel');
+  updateCoinWin();
+}
+function updateCoinWin() {
+  const bet = parseFloat(document.getElementById('coinBet').value)||0;
+  document.getElementById('coinWinAmt').textContent = '₦'+(bet*1.9).toLocaleString('en-NG',{maximumFractionDigits:0});
+}
+function playCoin() {
+  if (!requireLogin()) return;
+  if (!coinChoice) { showToast('Pick a side!','Choose Heads or Tails','error'); return; }
+  const bet = parseFloat(document.getElementById('coinBet').value)||0;
+  if (bet < 100) { showToast('Min ₦100','','error'); return; }
+  if (bet > balance) { showToast('Low balance','','error'); return; }
+  balance -= bet; localStorage.setItem('tb_balance', balance); updateUI();
+  document.getElementById('coinFlipBtn').disabled = true;
+  const coin = document.getElementById('coinFace');
+  coin.classList.add('coin-flip-anim');
+  setTimeout(() => {
+    coin.classList.remove('coin-flip-anim');
+    const result = Math.random() < 0.5 ? 'heads' : 'tails';
+    const won = result === coinChoice;
+    coin.className = `coin ${result === 'heads' ? 'coin-h' : 'coin-t'}`;
+    coin.textContent = result === 'heads' ? '👑' : '🦅';
+    const msg = document.getElementById('coinMsg');
+    const hist = document.getElementById('coinHistory');
+    if (won) {
+      const win = bet*1.9;
+      balance += win; localStorage.setItem('tb_balance', balance); updateUI();
+      msg.innerHTML = `<span style="color:var(--green);font-weight:700">🎉 ${result.toUpperCase()}! +₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>`;
+      hist.innerHTML = `<span class="gp-hist-win">+₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>` + hist.innerHTML;
+      addWinFeedItem(user.name, win, 'Coin Flip');
+    } else {
+      msg.innerHTML = `<span style="color:var(--red);font-weight:700">${result.toUpperCase()}! Better luck next time.</span>`;
+      hist.innerHTML = `<span class="gp-hist-loss">-₦${bet.toLocaleString()}</span>` + hist.innerHTML;
+    }
+    document.getElementById('coinFlipBtn').disabled = false;
+  }, 700);
+}
+
+// COLOR PREDICT
+const colorMap = {Red:'#EF4444',Green:'#22C55E',Blue:'#3B82F6',Orange:'#F97316',Purple:'#8B5CF6',Pink:'#EC4899',Yellow:'#EAB308',Teal:'#14B8A6',Black:'#1a1b2a'};
+const colorPool = ['Red','Red','Red','Green','Green','Green','Blue','Blue','Blue','Orange','Orange','Purple','Purple','Pink','Pink','Yellow','Teal','Black'];
+function selectColor(name, multLabel, mult) {
+  colorChoice = name; colorChoiceMult = mult;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('sel'));
+  event.target.classList.add('sel');
+  updateColorWin();
+}
+function updateColorWin() {
+  const bet = parseFloat(document.getElementById('colorBet').value)||0;
+  document.getElementById('colorWinAmt').textContent = colorChoice ? '₦'+(bet*colorChoiceMult).toLocaleString('en-NG',{maximumFractionDigits:0}) : '₦0';
+}
+function playColor() {
+  if (!requireLogin()) return;
+  if (!colorChoice) { showToast('Pick a color!','','error'); return; }
+  const bet = parseFloat(document.getElementById('colorBet').value)||0;
+  if (bet < 100) { showToast('Min ₦100','','error'); return; }
+  if (bet > balance) { showToast('Low balance','','error'); return; }
+  balance -= bet; localStorage.setItem('tb_balance', balance); updateUI();
+  document.getElementById('colorSpinBtn').disabled = true;
+  const display = document.getElementById('colorResult');
+  let ticks = 0;
+  const spin = setInterval(() => {
+    const rand = colorPool[Math.floor(Math.random()*colorPool.length)];
+    display.style.background = colorMap[rand];
+    if (++ticks > 15) clearInterval(spin);
+  }, 80);
+  setTimeout(() => {
+    const result = colorPool[Math.floor(Math.random()*colorPool.length)];
+    display.style.background = colorMap[result];
+    display.classList.add('color-anim');
+    setTimeout(()=>display.classList.remove('color-anim'),400);
+    const won = result === colorChoice;
+    const msg = document.getElementById('colorMsg');
+    const hist = document.getElementById('colorHistory');
+    if (won) {
+      const win = bet * colorChoiceMult;
+      balance += win; localStorage.setItem('tb_balance', balance); updateUI();
+      msg.innerHTML = `<span style="color:var(--green);font-weight:800">🎉 ${result}! +₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>`;
+      hist.innerHTML = `<span class="gp-hist-win">+₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>` + hist.innerHTML;
+      addWinFeedItem(user.name, win, 'Color');
+    } else {
+      msg.innerHTML = `<span style="color:var(--red);font-weight:700">It was ${result}! You picked ${colorChoice}.</span>`;
+      hist.innerHTML = `<span class="gp-hist-loss">-₦${bet.toLocaleString()}</span>` + hist.innerHTML;
+    }
+    document.getElementById('colorSpinBtn').disabled = false;
+  }, 1300);
+}
+
+// PENALTY SHOOTOUT
+function startPenalty() {
+  if (!requireLogin()) return;
+  const bet = parseFloat(document.getElementById('penaltyBet').value)||0;
+  if (bet < 100) { showToast('Min ₦100','','error'); return; }
+  if (bet > balance) { showToast('Low balance','','error'); return; }
+  balance -= bet; localStorage.setItem('tb_balance', balance); updateUI();
+  pkState = {active:true, round:1, scored:0, conceded:0, bet, totalRounds:5};
+  document.getElementById('pkStartBtn').disabled = true;
+  updatePKDisplay();
+  document.querySelectorAll('.penalty-zone').forEach(z => { z.textContent=''; z.className='penalty-zone'; });
+}
+function updatePKDisplay() {
+  document.getElementById('pkRound').textContent = `Round ${pkState.round} of ${pkState.totalRounds}`;
+  document.getElementById('pkScore').textContent = `${pkState.scored} - ${pkState.conceded}`;
+  const remaining = pkState.totalRounds - pkState.round + 1;
+  const mult = pkState.scored >= 4 ? 3.0 : pkState.scored >= 3 ? 2.0 : 1.5;
+  document.getElementById('pkMulti').textContent = `${mult.toFixed(2)}x`;
+  document.getElementById('pkStatus').textContent = pkState.round <= pkState.totalRounds ? 'Pick a zone to shoot!' : 'Game Over';
+}
+function shootPenalty(zone) {
+  if (!pkState.active || pkState.round > pkState.totalRounds) return;
+  const keeperZone = Math.floor(Math.random()*6);
+  const scored = zone !== keeperZone;
+  const zoneEl = document.getElementById('pz'+zone);
+  const keeperEl = document.getElementById('pz'+keeperZone);
+  document.querySelectorAll('.penalty-zone').forEach(z => z.style.pointerEvents = 'none');
+  zoneEl.classList.add(scored ? 'scored' : 'saved');
+  zoneEl.textContent = scored ? '⚽' : '🥅';
+  if (!scored) { keeperEl.classList.add('saved'); keeperEl.textContent = '🧤'; }
+  if (scored) pkState.scored++;
+  else pkState.conceded++;
+  pkState.round++;
+  setTimeout(() => {
+    document.querySelectorAll('.penalty-zone').forEach(z => { z.textContent=''; z.className='penalty-zone'; z.style.pointerEvents=''; });
+    updatePKDisplay();
+    if (pkState.round > pkState.totalRounds) {
+      finishPenalty();
+    }
+  }, 900);
+}
+function finishPenalty() {
+  pkState.active = false;
+  document.getElementById('pkStartBtn').disabled = false;
+  const mult = pkState.scored >= 4 ? 3.0 : pkState.scored >= 3 ? 2.0 : pkState.scored >= 2 ? 1.0 : 0;
+  const hist = document.getElementById('penaltyHistory');
+  if (mult > 0) {
+    const win = pkState.bet * mult;
+    balance += win; localStorage.setItem('tb_balance', balance); updateUI();
+    document.getElementById('pkStatus').textContent = `🎉 ${pkState.scored} goals! Won ₦${win.toLocaleString()}`;
+    hist.innerHTML = `<span class="gp-hist-win">+₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>` + hist.innerHTML;
+    addWinFeedItem(user.name, win, 'Penalty');
+  } else {
+    document.getElementById('pkStatus').textContent = `Only ${pkState.scored} goals. Better luck next time!`;
+    hist.innerHTML = `<span class="gp-hist-loss">-₦${pkState.bet.toLocaleString()}</span>` + hist.innerHTML;
+  }
+}
+
+// MINES
+function startMines() {
+  if (!requireLogin()) return;
+  const bet = parseFloat(document.getElementById('minesBet').value)||0;
+  const mineCount = parseInt(document.getElementById('minesCount').value)||5;
+  if (bet < 100) { showToast('Min ₦100','','error'); return; }
+  if (bet > balance) { showToast('Low balance','','error'); return; }
+  balance -= bet; localStorage.setItem('tb_balance', balance); updateUI();
+  const totalCells = 25;
+  const mines = [];
+  while (mines.length < mineCount) {
+    const r = Math.floor(Math.random()*totalCells);
+    if (!mines.includes(r)) mines.push(r);
+  }
+  minesState = {active:true, grid:Array(totalCells).fill(null), revealed:0, mines, bet, mineCount, gemsFound:0};
+  document.getElementById('minesStartBtn').textContent = '🔄 New Game';
+  document.getElementById('minesMulti').textContent = '1.00x';
+  document.getElementById('minesPayoutAmt').textContent = '₦0';
+  document.getElementById('minesCashout').classList.remove('show');
+  renderMinesGrid();
+}
+function renderMinesGrid() {
+  const grid = document.getElementById('minesGrid');
+  grid.innerHTML = Array(25).fill(0).map((_,i) => {
+    const cell = minesState.grid[i];
+    let cls = 'mine-cell';
+    let content = '';
+    if (cell === 'gem') { cls += ' gem revealed'; content = '💎'; }
+    else if (cell === 'bomb') { cls += ' bomb revealed'; content = '💣'; }
+    return `<div class="${cls}" onclick="clickMine(${i})">${content}</div>`;
+  }).join('');
+}
+function clickMine(idx) {
+  if (!minesState.active) { showToast('Start a game!','Click New Game first','error'); return; }
+  if (minesState.grid[idx] !== null) return;
+  const isMine = minesState.mines.includes(idx);
+  minesState.grid[idx] = isMine ? 'bomb' : 'gem';
+  if (isMine) {
+    minesState.active = false;
+    minesState.mines.forEach(m => { minesState.grid[m] = 'bomb'; });
+    renderMinesGrid();
+    document.getElementById('minesMulti').textContent = '💥 BOOM!';
+    document.getElementById('minesMsg').textContent = `Hit a mine! Lost ₦${minesState.bet.toLocaleString()}`;
+    document.getElementById('minesPayoutAmt').textContent = '₦0';
+    document.getElementById('minesCashout').classList.remove('show');
+    document.getElementById('minesHistory').innerHTML = `<span class="gp-hist-loss">-₦${minesState.bet.toLocaleString()}</span>` + document.getElementById('minesHistory').innerHTML;
+  } else {
+    minesState.gemsFound++;
+    const safeCells = 25 - minesState.mineCount;
+    const mult = Math.pow((safeCells / (safeCells - minesState.gemsFound + 1)), minesState.gemsFound * 0.5) * (1 + minesState.mineCount * 0.1);
+    const cappedMult = Math.min(mult, 25);
+    const payout = minesState.bet * cappedMult;
+    document.getElementById('minesMulti').textContent = cappedMult.toFixed(2)+'x';
+    document.getElementById('minesMsg').textContent = `${minesState.gemsFound} gems found! Cash out anytime.`;
+    document.getElementById('minesPayoutAmt').textContent = '₦'+payout.toLocaleString('en-NG',{maximumFractionDigits:0});
+    document.getElementById('minesCashout').classList.add('show');
+    renderMinesGrid();
+  }
+}
+function minesCashOut() {
+  if (!minesState.active) return;
+  minesState.active = false;
+  const safeCells = 25 - minesState.mineCount;
+  const mult = Math.pow((safeCells/(safeCells - minesState.gemsFound + 1)), minesState.gemsFound * 0.5) * (1 + minesState.mineCount * 0.1);
+  const cappedMult = Math.min(mult, 25);
+  const win = minesState.bet * cappedMult;
+  balance += win; localStorage.setItem('tb_balance', balance); updateUI();
+  document.getElementById('minesMsg').textContent = `Cashed out! +₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}`;
+  document.getElementById('minesCashout').classList.remove('show');
+  document.getElementById('minesHistory').innerHTML = `<span class="gp-hist-win">+₦${win.toLocaleString('en-NG',{maximumFractionDigits:0})}</span>` + document.getElementById('minesHistory').innerHTML;
+  addWinFeedItem(user.name, win, 'Mines');
+  // reveal remaining bombs
+  minesState.mines.forEach(m => { if(!minesState.grid[m]) minesState.grid[m]='bomb'; });
+  renderMinesGrid();
+}
+
+// LIVE WIN FEED
+const winFeedNames = ['Chidi O.','Amaka B.','Tunde K.','Ngozi S.','Emeka D.','Sola A.','Bola F.','Funke R.','Kemi J.','Ayo L.','Seun P.','Bisi T.'];
+const winFeedGames = ['Aviator','Dice','Mines','Coin Flip','Color','Virtual Football','Penalty'];
+function addWinFeedItem(name, amount, game) {
+  const feed = document.getElementById('winFeed');
+  if (!feed) return;
+  const item = document.createElement('div');
+  item.className = 'wf-item';
+  item.innerHTML = `<div class="wf-av">${name.charAt(0)}</div><div><div class="wf-name">${name}</div><div style="color:var(--t2);font-size:.65rem">${game}</div></div><div class="wf-amt">+₦${amount.toLocaleString('en-NG',{maximumFractionDigits:0})}</div>`;
+  feed.prepend(item);
+  if (feed.children.length > 4) feed.lastChild.remove();
+  setTimeout(() => item.remove(), 5000);
+}
+function startFakeFeed() {
+  setInterval(() => {
+    const name = winFeedNames[Math.floor(Math.random()*winFeedNames.length)];
+    const game = winFeedGames[Math.floor(Math.random()*winFeedGames.length)];
+    const amount = (Math.floor(Math.random()*50)+1)*1000 + Math.floor(Math.random()*999);
+    addWinFeedItem(name, amount, game);
+  }, 4500);
+}
+startFakeFeed();
 
 // UTILITIES
 function toggleStats(matchId) {
@@ -2292,14 +3247,6 @@ function sendChat() {
 function toggleAudio() {
   audioEnabled = !audioEnabled;
   document.getElementById('abt').innerHTML = audioEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-}
-
-function showSection(sec) {
-  if(sec === 'main') {
-    document.getElementById('aviatorSection').classList.remove('open');
-    document.getElementById('mainContent').style.display = 'block';
-    stopAviator();
-  }
 }
 
 function openModal(id) {
